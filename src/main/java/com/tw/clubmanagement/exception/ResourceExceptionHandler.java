@@ -1,6 +1,6 @@
 package com.tw.clubmanagement.exception;
 
-import com.tianfu.mall.exception.representation.HttpStatusExceptionRepresentation;
+import com.tw.clubmanagement.exception.representation.HttpStatusExceptionRepresentation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
