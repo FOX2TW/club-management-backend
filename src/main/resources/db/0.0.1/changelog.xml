@@ -7,4 +7,20 @@
     <changeSet id="0.0.1-user" author="jun.li">
         <sqlFile path="user.sql" relativeToChangelogFile="true" splitStatements="true" stripComments="true"/>
     </changeSet>
+    <changeSet id="0.0.1-club" author="jun.li">
+        <sql>
+            create table t_club(
+            `id` int unsigned not null primary key auto_increment,
+            `name` varchar(100) not null,
+            `type` int not null,
+            `approve_status` tinyint(1) not null default 0,
+            `introduction` varchar(2000),
+            `delete_status` tinyint(1) not null default 0,
+            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `created_by` int unsigned not null,
+            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `updated_by` int unsigned not null
+            ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
