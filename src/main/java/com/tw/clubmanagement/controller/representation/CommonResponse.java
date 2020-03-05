@@ -1,9 +1,12 @@
 package com.tw.clubmanagement.controller.representation;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class CommonResponse {
-    public boolean status;
+    public Object data;
+    public int code;
     public String message;
 }

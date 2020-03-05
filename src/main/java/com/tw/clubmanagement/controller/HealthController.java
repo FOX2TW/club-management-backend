@@ -9,9 +9,9 @@ public class HealthController {
 
     @GetMapping("ping")
     public CommonResponse ping() {
-        CommonResponse response = new CommonResponse();
-        response.status = true;
-        response.message = "pong";
+        CommonResponse response = CommonResponse.builder()
+                .code(200)
+                .data("pong").build();
         return response;
     }
 }
