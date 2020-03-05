@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CommonResponse {
-    private Object data;
+public class CommonResponse<T> {
+    private T data;
     private int code;
     private String message;
 }
