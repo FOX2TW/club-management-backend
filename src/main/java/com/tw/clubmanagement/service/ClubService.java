@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
-    private ClubRepository clubRepository;
+    private final ClubRepository clubRepository;
     private final Mapper beanMapper;
 
     @Autowired
