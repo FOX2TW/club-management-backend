@@ -81,6 +81,23 @@ res:
 }
 ```
 
+## 获取用户信息
+
+method: GET
+
+path: /api/user/{userId}
+
+res:
+```
+{
+    id: 568715
+    username: "chenjw"
+    status: 0
+    phone: "15963581687"
+    profileImagePath: "/storage/user/568715/chenjw.png"
+}
+```
+
 ## 修改个人信息
 
 method: PUT

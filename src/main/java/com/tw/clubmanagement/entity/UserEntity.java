@@ -1,33 +1,27 @@
 package com.tw.clubmanagement.entity;
 
-import com.tw.clubmanagement.controller.representation.UserInformation;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.tw.clubmanagement.model.UserInformation;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "t_user")
 public class UserEntity extends BaseEntity {
-    @Column(nullable = false)
+    private Integer id;
     private String username;
-    private String phone;
     private String password;
     private Integer status;
+    private String phone;
     private String profileImagePath;
 
     public UserInformation toUserInformation() {
         return UserInformation.builder()
+                .id(id)
                 .username(username)
-                .phone(phone)
                 .password(password)
                 .status(status)
+                .phone(phone)
                 .profileImagePath(profileImagePath)
                 .build();
     }

@@ -1,15 +1,12 @@
-package com.tw.clubmanagement.controller.representation;
+package com.tw.clubmanagement.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
 public class UserInformation {
+    private Integer id;
     private String username;
     private String phone;
     private String password;
