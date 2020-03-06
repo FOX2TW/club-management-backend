@@ -5,11 +5,9 @@ import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -32,6 +30,11 @@ public class ClubController {
     @GetMapping
     public List<ClubRepresentation> getClubs() {
         return clubService.getAllClubs();
+    }
+
+    @PostMapping
+    public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO) {
+        clubService.createClub(clubCreateDTO);
     }
 
     @GetMapping("{clubId}")

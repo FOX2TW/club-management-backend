@@ -1,10 +1,7 @@
 package com.tw.clubmanagement.service;
 
 import com.github.dozermapper.core.Mapper;
-import com.tw.clubmanagement.controller.representation.ClubDetailInfo;
-import com.tw.clubmanagement.controller.representation.ClubRepresentation;
-import com.tw.clubmanagement.controller.representation.ClubTypeRepresentation;
-import com.tw.clubmanagement.controller.representation.InvolvedClubGetResponseDTO;
+import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.entity.ClubEntity;
 import com.tw.clubmanagement.entity.ClubMemberEntity;
 import com.tw.clubmanagement.enums.ClubType;
@@ -76,5 +73,16 @@ public class ClubService {
                 .members(new ArrayList<>())
                 .activities(new ArrayList<>())
                 .build();
+    }
+
+    public void createClub(ClubCreateDTO clubCreateDTO) {
+        ClubEntity clubEntity = new ClubEntity();
+        clubEntity.setAddress(clubCreateDTO.getAddress());
+        clubEntity.setName(clubCreateDTO.getName());
+        clubEntity.setType(clubCreateDTO.getType());
+        clubEntity.setIntroduction(clubCreateDTO.getIntroduction());
+        clubEntity.setPicture(clubCreateDTO.getPicture());
+        clubEntity.setCreatedBy(1L);
+        clubRepository.save(clubEntity).toClubInformation();
     }
 }
