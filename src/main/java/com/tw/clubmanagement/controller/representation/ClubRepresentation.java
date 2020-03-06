@@ -9,5 +9,4 @@ public class ClubRepresentation {
     private int type;
     private boolean approveStatus;
     private String introduction;
-    private boolean deleteStatus;
 }
