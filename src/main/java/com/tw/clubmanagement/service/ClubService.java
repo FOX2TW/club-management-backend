@@ -49,7 +49,7 @@ public class ClubService {
     }
 
     public List<InvolvedClubGetResponseDTO> getInvolvedClub(Integer userId) {
-        List<ClubMember> clubMembers = clubMemberRepository.findAllByUserId()
+        List<ClubMember> clubMembers = clubMemberRepository.findAllByUserId(userId)
                 .stream().map(ClubMemberEntity::toClubMember).collect(Collectors.toList());
 
         List<Integer> clubIds = clubMembers.stream().map(ClubMember::getClubId).collect(Collectors.toList());
