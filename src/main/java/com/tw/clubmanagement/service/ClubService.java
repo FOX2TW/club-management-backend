@@ -8,6 +8,7 @@ import com.tw.clubmanagement.controller.representation.InvolvedClubGetResponseDT
 import com.tw.clubmanagement.entity.ClubEntity;
 import com.tw.clubmanagement.entity.ClubMemberEntity;
 import com.tw.clubmanagement.enums.ClubType;
+import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.repository.ClubMemberRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +66,15 @@ public class ClubService {
     }
 
     public ClubDetailInfo getClubDetailInfo(Integer clubId) {
-        return null;
+        ClubEntity clubEntity = clubRepository.findById(clubId).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
+        return ClubDetailInfo.builder()
+                .introduction(clubEntity.getIntroduction())
+                .name(clubEntity.getName())
+                .picture(clubEntity.getPicture())
+                .address(clubEntity.getAddress())
+                .type(clubEntity.getType())
+                .members(new ArrayList<>())
+                .activities(new ArrayList<>())
+                .build();
     }
 }
