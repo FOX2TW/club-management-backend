@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tw</groupId>
-    <artifactId>club-management</artifactId>
+    <artifactId>clubInformation-management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>club-management</name>
+    <name>clubInformation-management</name>
     <description>Club management for TW</description>
 
     <properties>

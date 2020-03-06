@@ -23,4 +23,18 @@
             ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
+    <changeSet id="0.0.1-clubMember" author="jw.chen">
+        <sql>
+            create table t_club_member(
+            `id` int unsigned not null primary key auto_increment,
+            `user_id` int unsigned not null,
+            `club_id` int unsigned not null,
+            `manager_flag` tinyint(1) not null default 0,
+            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `created_by` int unsigned not null,
+            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `updated_by` int unsigned not null
+            ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

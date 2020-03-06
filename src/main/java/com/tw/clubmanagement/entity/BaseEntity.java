@@ -16,7 +16,7 @@ public class BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  protected Integer id;
 
   private long createdBy;
 

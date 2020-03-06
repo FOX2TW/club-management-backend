@@ -1,4 +1,4 @@
-# club-management-backend
+# clubInformation-management-backend
 
 
 # 接口文档
@@ -124,7 +124,7 @@ res:
 ## 获取俱乐部类型
 method: GET
 
-path: /api/club/type
+path: /api/clubInformation/type
 
 res:
 
@@ -135,7 +135,7 @@ res:
 ## 创建俱乐部
 method: POST
 
-path: /api/club
+path: /api/clubInformation
 
 req: 
 ```
