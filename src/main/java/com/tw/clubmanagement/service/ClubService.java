@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class ClubService {
 
     public List<ClubRepresentation> getAllClubs() {
         return clubRepository.findAll().stream()
+                .sorted(Comparator.comparing(ClubEntity :: getCreatedAt).reversed())
                 .map(clubEntity -> beanMapper.map(clubEntity, ClubRepresentation.class))
                 .collect(Collectors.toList());
     }
