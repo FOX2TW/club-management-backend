@@ -1,6 +1,6 @@
 FROM openjdk:8
-
-ADD ./target/club-management-0.0.1-SNAPSHOT.jar /app.jar
+VOLUME /tmp
+ADD target/clubInformation-management-0.0.1-SNAPSHOT.jar /app.jar
 ENV TZ Asia/Shanghai
 RUN bash -c 'touch /app.jar'
 EXPOSE 8080
