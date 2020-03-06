@@ -16,6 +16,8 @@ public class ClubEntity extends BaseEntity {
     private int type;
     private boolean approveStatus;
     private String introduction;
+    private String picture;
+    private String address;
     private boolean deleteStatus;
 
     public ClubInformation toClubInformation() {

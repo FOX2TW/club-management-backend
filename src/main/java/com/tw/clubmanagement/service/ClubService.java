@@ -1,6 +1,7 @@
 package com.tw.clubmanagement.service;
 
 import com.github.dozermapper.core.Mapper;
+import com.tw.clubmanagement.controller.representation.ClubDetailInfo;
 import com.tw.clubmanagement.controller.representation.ClubRepresentation;
 import com.tw.clubmanagement.controller.representation.ClubTypeRepresentation;
 import com.tw.clubmanagement.controller.representation.InvolvedClubGetResponseDTO;
@@ -60,5 +61,9 @@ public class ClubService {
                 .stream().map(ClubEntity::toClubInformation).collect(Collectors.toList());
 
         return InvolvedClubGetResponseDTO.fromClubInformationAndClubMember(clubInformations, clubMembers);
+    }
+
+    public ClubDetailInfo getClubDetailInfo(Integer clubId) {
+        return null;
     }
 }

@@ -34,4 +34,14 @@
             ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
+    <changeSet id="0.0.1-add-fields-to-club" author="jun.li">
+        <addColumn tableName="t_club">
+            <column name="picture" type="VARCHAR(400)" afterColumn="introduction">
+            <constraints nullable="true" />
+        </column>
+            <column name="address" type="VARCHAR(200)" afterColumn="picture">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
