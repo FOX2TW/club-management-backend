@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,14 +63,16 @@ public class ClubService {
 
     public ClubDetailInfo getClubDetailInfo(Integer clubId) {
         ClubEntity clubEntity = clubRepository.findById(clubId).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
+        List<MemberInfo> clubMembers = clubMemberRepository.findByClubId(clubId).stream()
+                .map(ClubMemberEntity::toMemberInfo).collect(Collectors.toList());
         return ClubDetailInfo.builder()
                 .introduction(clubEntity.getIntroduction())
                 .name(clubEntity.getName())
                 .picture(clubEntity.getPicture())
                 .address(clubEntity.getAddress())
                 .type(clubEntity.getType())
-                .members(new ArrayList<>())
-                .activities(new ArrayList<>())
+                .members(clubMembers)
+                .activities(new ArrayList<>()) // TODO set activities here
                 .build();
     }
 
