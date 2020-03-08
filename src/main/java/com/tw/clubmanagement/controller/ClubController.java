@@ -37,6 +37,11 @@ public class ClubController {
         clubService.createClub(clubCreateDTO);
     }
 
+    @PutMapping
+    public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO) {
+        clubService.updateClub(clubUpdateDTO);
+    }
+
     @GetMapping("{clubId}")
     public ClubDetailInfo getClubDetailInfo(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE) Integer clubId) {
         return clubService.getClubDetailInfo(clubId);

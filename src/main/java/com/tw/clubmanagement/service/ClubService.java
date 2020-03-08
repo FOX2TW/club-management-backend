@@ -13,9 +13,11 @@ import com.tw.clubmanagement.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,5 +87,17 @@ public class ClubService {
         clubEntity.setPicture(clubCreateDTO.getPicture());
         clubEntity.setCreatedBy(1L);
         clubRepository.save(clubEntity).toClubInformation();
+    }
+
+    public void updateClub(ClubUpdateDTO clubUpdateDTO) {
+        Integer id = clubUpdateDTO.getId();
+        ClubEntity clubEntity = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
+
+        clubEntity.setType(clubUpdateDTO.getType());
+        clubEntity.setPicture(clubUpdateDTO.getPicture());
+        clubEntity.setName(clubUpdateDTO.getName());
+        clubEntity.setIntroduction(clubUpdateDTO.getIntroduction());
+        clubEntity.setAddress(clubUpdateDTO.getAddress());
+        clubRepository.save(clubEntity);
     }
 }
