@@ -88,6 +88,8 @@
             `reason` varchar(400) COMMENT '申请理由',
             `cellphone` varchar(11) null COMMENT '电话号码',
             `we_chat_no` varchar(50) null COMMENT '微信号',
+            `manager_comment` varchar(400) COMMENT '管理员处理意见',
+            `status` tinyint(1) not null DEFAULT 0 COMMENT '0：未处理，1：已同意, 2：已拒绝',
             `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
             `created_by` int unsigned not null,
             `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

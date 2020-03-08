@@ -17,6 +17,8 @@ public class ApplicationRecordEntity extends BaseEntity {
     private String reason;
     private String cellphone;
     private String weChatNo;
+    private String managerComment;
+    private int status;
 
     public ApplicationRecordEntity(ApplcationRecordCreateDTO recordCreateDTO) {
         this.setClubId(recordCreateDTO.getClubId());

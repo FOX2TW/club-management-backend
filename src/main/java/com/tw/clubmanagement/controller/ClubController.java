@@ -65,4 +65,9 @@ public class ClubController {
     public void createApplicationRecord(@RequestBody @Valid ApplcationRecordCreateDTO applcationRecordCreateDTO) {
         clubService.createApplicationRecord(applcationRecordCreateDTO);
     }
+
+    @PutMapping("club/member")
+    public void processApplication(@RequestBody @Valid ApplcationProcessDTO processDTO) {
+        clubService.processApplication(processDTO);
+    }
 }

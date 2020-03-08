@@ -7,6 +7,7 @@ import com.tw.clubmanagement.entity.ClubEntity;
 import com.tw.clubmanagement.entity.ClubMemberEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
+import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.repository.ApplicationRecordRepository;
@@ -15,6 +16,7 @@ import com.tw.clubmanagement.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +24,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
+    private static final int AGREE = 1;
+    private static final int REJECT = 2;
+    private static final int UNPROCESSED = 0;
+
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
     private final ApplicationRecordRepository applicationRecordRepository;
@@ -107,5 +113,24 @@ public class ClubService {
     public void createApplicationRecord(ApplcationRecordCreateDTO applcationRecordCreateDTO) {
         ApplicationRecordEntity recordEntity = applcationRecordCreateDTO.toApplicationRecordEntity();
         applicationRecordRepository.save(recordEntity);
+    }
+
+    @Transactional
+    public void processApplication(ApplcationProcessDTO processDTO) {
+        ApplicationRecordEntity recordEntity = applicationRecordRepository.findById(processDTO.getRecordId())
+                .orElseThrow(() -> new ResourceNotFoundException("找不到指定申请记录"));
+        if (recordEntity.getStatus() != UNPROCESSED) {
+            throw new ValidationException("该申请已处理过了");
+        }
+
+        recordEntity.setStatus(processDTO.isAgree() ? AGREE : REJECT);
+        recordEntity.setManagerComment(processDTO.getManagerComment());
+        applicationRecordRepository.save(recordEntity);
+
+        ClubMemberEntity clubMemberEntity = new ClubMemberEntity();
+        clubMemberEntity.setClubId(recordEntity.getClubId());
+        clubMemberEntity.setUserId(recordEntity.getUserId());
+        clubMemberEntity.setManagerFlag(0);
+        clubMemberRepository.save(clubMemberEntity);
     }
 }
