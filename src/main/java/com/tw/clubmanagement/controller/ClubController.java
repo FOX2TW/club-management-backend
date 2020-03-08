@@ -60,4 +60,9 @@ public class ClubController {
 
         return clubService.getInvolvedClub(Integer.valueOf(userId));
     }
+
+    @PostMapping("join")
+    public void createApplicationRecord(@RequestBody @Valid ApplcationRecordCreateDTO applcationRecordCreateDTO) {
+        clubService.createApplicationRecord(applcationRecordCreateDTO);
+    }
 }

@@ -79,4 +79,20 @@
             ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
+    <changeSet id="0.0.1-application_record" author="jun.li">
+        <sql>
+            create table t_application_record(
+            `id` int unsigned not null primary key auto_increment COMMENT '主键',
+            `user_id` int unsigned not null COMMENT '用户ID',
+            `club_id` int unsigned not null COMMENT '俱乐部ID',
+            `reason` varchar(400) COMMENT '申请理由',
+            `cellphone` varchar(11) null COMMENT '电话号码',
+            `we_chat_no` varchar(50) null COMMENT '微信号',
+            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `created_by` int unsigned not null,
+            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `updated_by` int unsigned not null
+            ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -2,34 +2,37 @@ package com.tw.clubmanagement.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.tw.clubmanagement.controller.representation.*;
+import com.tw.clubmanagement.entity.ApplicationRecordEntity;
 import com.tw.clubmanagement.entity.ClubEntity;
 import com.tw.clubmanagement.entity.ClubMemberEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
+import com.tw.clubmanagement.repository.ApplicationRecordRepository;
 import com.tw.clubmanagement.repository.ClubMemberRepository;
 import com.tw.clubmanagement.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
+    private final ApplicationRecordRepository applicationRecordRepository;
     private final Mapper beanMapper;
 
     @Autowired
-    public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository, Mapper beanMapper) {
+    public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository,
+                       ApplicationRecordRepository applicationRecordRepository, Mapper beanMapper) {
         this.clubRepository = clubRepository;
         this.clubMemberRepository = clubMemberRepository;
+        this.applicationRecordRepository = applicationRecordRepository;
         this.beanMapper = beanMapper;
     }
 
@@ -99,5 +102,10 @@ public class ClubService {
         clubEntity.setIntroduction(clubUpdateDTO.getIntroduction());
         clubEntity.setAddress(clubUpdateDTO.getAddress());
         clubRepository.save(clubEntity);
+    }
+
+    public void createApplicationRecord(ApplcationRecordCreateDTO applcationRecordCreateDTO) {
+        ApplicationRecordEntity recordEntity = applcationRecordCreateDTO.toApplicationRecordEntity();
+        applicationRecordRepository.save(recordEntity);
     }
 }
