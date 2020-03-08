@@ -70,4 +70,10 @@ public class ClubController {
     public void processApplication(@RequestBody @Valid ApplcationProcessDTO processDTO) {
         clubService.processApplication(processDTO);
     }
+
+    @PutMapping("/{clubIb}/member/{userId}")
+    public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
+                                 @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId) {
+        clubService.deleteClubMember(clubIb, userId);
+    }
 }

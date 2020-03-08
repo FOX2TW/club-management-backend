@@ -133,4 +133,11 @@ public class ClubService {
         clubMemberEntity.setManagerFlag(0);
         clubMemberRepository.save(clubMemberEntity);
     }
+
+    public void deleteClubMember(Integer clubIb, Integer userId) {
+        ClubMemberEntity clubMemberEntity = clubMemberRepository.findByClubIdAndUserId(clubIb, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("未找到对应记录"));
+
+        clubMemberRepository.deleteById(clubMemberEntity.getId());
+    }
 }
