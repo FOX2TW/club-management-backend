@@ -42,11 +42,19 @@ public class ClubService {
         this.beanMapper = beanMapper;
     }
 
-    public List<ClubRepresentation> getAllClubs() {
+    public List<ClubRepresentation> getAllClubs(Integer accessId) {
+        List<ClubMember> clubMembers = clubMemberRepository.findAllByUserId(accessId)
+                .stream().map(ClubMemberEntity::toClubMember).collect(Collectors.toList());
+
+        List<Integer> allJoinedClubIds = clubMembers.stream().map(ClubMember::getClubId).collect(Collectors.toList());
+
         return clubRepository.findAll().stream()
                 .sorted(Comparator.comparing(ClubEntity :: getCreatedAt).reversed())
                 .map(clubEntity -> beanMapper.map(clubEntity, ClubRepresentation.class))
+                .map(clubRepresentation -> clubRepresentation.isManager(accessId))
+                .map(clubRepresentation -> clubRepresentation.isJoin(allJoinedClubIds))
                 .collect(Collectors.toList());
+
     }
 
     public List<ClubTypeRepresentation> getAllClubTypes() {

@@ -29,8 +29,8 @@ public class ClubController {
     }
 
     @GetMapping
-    public List<ClubRepresentation> getClubs() {
-        return clubService.getAllClubs();
+    public List<ClubRepresentation> getClubs(@RequestHeader Integer accessId) {
+        return clubService.getAllClubs(accessId);
     }
 
     @PostMapping
