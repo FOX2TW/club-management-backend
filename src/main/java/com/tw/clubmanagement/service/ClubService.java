@@ -106,6 +106,7 @@ public class ClubService {
                 .map(UserEntity::toUserInformation).collect(Collectors.toList());
 
         return ClubDetailInfo.builder()
+                .id(clubEntity.getId())
                 .introduction(clubEntity.getIntroduction())
                 .name(clubEntity.getName())
                 .picture(clubEntity.getPicture())

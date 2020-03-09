@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class ClubDetailInfo {
+    private Integer id;
     private String name;
     private Integer type;
     private String picture;
