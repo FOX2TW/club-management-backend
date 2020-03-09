@@ -87,18 +87,18 @@ public class ClubService {
                 .build();
     }
 
-    public void createClub(ClubCreateDTO clubCreateDTO) {
+    public void createClub(ClubCreateDTO clubCreateDTO, Integer userId) {
         ClubEntity clubEntity = new ClubEntity();
         clubEntity.setAddress(clubCreateDTO.getAddress());
         clubEntity.setName(clubCreateDTO.getName());
         clubEntity.setType(clubCreateDTO.getType());
         clubEntity.setIntroduction(clubCreateDTO.getIntroduction());
         clubEntity.setPicture(clubCreateDTO.getPicture());
-        clubEntity.setCreatedBy(1L);
+        clubEntity.setCreatedBy(userId);
         clubRepository.save(clubEntity).toClubInformation();
     }
 
-    public void updateClub(ClubUpdateDTO clubUpdateDTO) {
+    public void updateClub(ClubUpdateDTO clubUpdateDTO, Integer userId) {
         Integer id = clubUpdateDTO.getId();
         ClubEntity clubEntity = clubRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
 
@@ -107,6 +107,7 @@ public class ClubService {
         clubEntity.setName(clubUpdateDTO.getName());
         clubEntity.setIntroduction(clubUpdateDTO.getIntroduction());
         clubEntity.setAddress(clubUpdateDTO.getAddress());
+        clubEntity.setUpdatedBy(userId);
         clubRepository.save(clubEntity);
     }
 

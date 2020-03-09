@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller;
 
+import com.tw.clubmanagement.annotation.AccessPermission;
 import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.service.ClubService;
@@ -33,13 +34,13 @@ public class ClubController {
     }
 
     @PostMapping
-    public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO) {
-        clubService.createClub(clubCreateDTO);
+    public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO, @RequestHeader Integer accessId) {
+        clubService.createClub(clubCreateDTO, accessId);
     }
 
     @PutMapping
-    public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO) {
-        clubService.updateClub(clubUpdateDTO);
+    public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO, @RequestHeader Integer accessId) {
+        clubService.updateClub(clubUpdateDTO, accessId);
     }
 
     @GetMapping("{clubId}")
