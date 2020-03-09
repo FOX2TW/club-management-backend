@@ -51,6 +51,13 @@ public class ClubService {
         return clubTypeRepresentations;
     }
 
+    public List<Integer> getManagedClubIds(Integer userId) {
+        return clubMemberRepository.findAllByUserId(userId).stream()
+                .map(ClubMemberEntity::toClubMember)
+                .filter(ClubMember::getIsManager)
+                .map(ClubMember::getClubId).collect(Collectors.toList());
+    }
+
     public List<InvolvedClubGetResponseDTO> getInvolvedClub(Integer userId) {
         List<ClubMember> clubMembers = clubMemberRepository.findAllByUserId(userId)
                 .stream().map(ClubMemberEntity::toClubMember).collect(Collectors.toList());

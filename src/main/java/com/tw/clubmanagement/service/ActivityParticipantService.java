@@ -27,4 +27,15 @@ public class ActivityParticipantService {
         return activityParticipantRepository.findAllByParticipantId(userId).stream()
                 .map(ActivityParticipantEntity::toActivityParticipant).collect(Collectors.toList());
     }
+
+    public void save(ActivityParticipant activityParticipant) {
+        activityParticipantRepository.save(ActivityParticipantEntity.fromActivityParticipant(activityParticipant));
+    }
+
+    public List<Integer> getParticipantIds(Integer activityId) {
+        return activityParticipantRepository.findAllByActivityId(activityId).stream()
+                .map(ActivityParticipantEntity::toActivityParticipant)
+                .map(ActivityParticipant::getParticipantId)
+                .collect(Collectors.toList());
+    }
 }

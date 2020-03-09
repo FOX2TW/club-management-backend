@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ActivityParticipantRepository extends JpaRepository<ActivityParticipantEntity, Integer> {
     List<ActivityParticipantEntity> findAllByParticipantId(Integer participantId);
+    List<ActivityParticipantEntity> findAllByActivityId(Integer activityId);
 }
