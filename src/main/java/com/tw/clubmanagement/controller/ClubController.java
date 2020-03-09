@@ -82,19 +82,19 @@ public class ClubController {
         clubService.processApplication(processDTO);
     }
 
-    @PutMapping("/{clubIb}/member/{userId}")
+    @DeleteMapping("/{clubId}/member/{userId}")
     @ApiOperation(value = "删除俱乐部成员")
-    public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
+    public void deleteClubMember(@PathVariable(value = "clubId") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
                                  @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId,
                                  @RequestHeader Integer currentUserId) throws AccessDeniedException {
-        clubService.deleteClubMember(clubIb, userId, currentUserId);
+        clubService.deleteClubMember(clubId, userId, currentUserId);
     }
 
     @DeleteMapping("/{clubIb}/member")
     @ApiOperation(value = "退出俱乐部")
-    public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
+    public void deleteClubMember(@PathVariable(value = "clubId") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
                                  @RequestHeader Integer currentUserId) {
-        clubService.quitClub(clubIb, currentUserId);
+        clubService.quitClub(clubId, currentUserId);
     }
 
     @PutMapping("/{clubIb}/process")
@@ -109,5 +109,19 @@ public class ClubController {
     @ApiOperation(value = "查询用户创建俱乐部申请")
     public ClubApplicationGetDTO getClubApplication(@RequestHeader Long currentUserId) {
         return clubService.getClubApplication(currentUserId);
+    }
+
+
+    @GetMapping("/join/application")
+    @ApiOperation(value = "查询用户加入俱乐部申请")
+    public List<JoinApplicationDTO> getJoinApplications(@RequestHeader Long currentUserId) {
+        return clubService.getJoinApplications(currentUserId);
+    }
+
+    @DeleteMapping("/join/{clubId}")
+    @ApiOperation(value = "用户取消加入俱乐部申请")
+    public void cancelJoinApplication(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
+                                                          @RequestHeader Integer currentUserId) {
+        clubService.cancelJoinApplication(clubId, currentUserId);
     }
 }

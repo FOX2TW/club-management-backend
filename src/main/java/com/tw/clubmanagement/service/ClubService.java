@@ -9,7 +9,6 @@ import com.tw.clubmanagement.entity.UserEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
-import com.tw.clubmanagement.model.ClubApplication;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.model.UserInformation;
@@ -25,6 +24,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -210,5 +210,32 @@ public class ClubService {
                 .applications(clubRepository.findByCreatedByAndProcessStatus(creatorId, false).stream()
                                 .map(ClubEntity::toClubApplication).collect(Collectors.toList()))
                 .creatorName(userInformation.getUsername()).build();
+    }
+
+    public List<JoinApplicationDTO> getJoinApplications(Long currentUserId) {
+        List<ApplicationRecordEntity> applicationRecordEntities =
+                applicationRecordRepository.findByUserIdAndStatus(Math.toIntExact(currentUserId), ApplicationRecordEntity.UNPROCESSED);
+        List<Integer> clubIds = applicationRecordEntities.stream()
+                .map(ApplicationRecordEntity::getClubId).collect(Collectors.toList());
+        Map<Integer, ClubEntity> clubEntityMap = clubRepository.findAllById(clubIds).stream()
+                .collect(Collectors.toMap(c -> c.getId(), c -> c));
+
+        List<JoinApplicationDTO> applicationDTOS = applicationRecordEntities.stream()
+                .map(ApplicationRecordEntity::toJoinApplicationDTO).collect(Collectors.toList());
+
+        UserInformation userInformation = userService.getUserInformation(Math.toIntExact(currentUserId));
+        applicationDTOS.forEach(joinApplicationDTO -> {
+            joinApplicationDTO.setClubName(clubEntityMap.get(joinApplicationDTO.getClubId()).getName());
+            joinApplicationDTO.setApplicantName(userInformation.getUsername());
+        });
+
+        return applicationDTOS;
+    }
+
+    public void cancelJoinApplication(Integer clubIb, Integer currentUserId) {
+        ApplicationRecordEntity recordEntity = applicationRecordRepository.findByUserIdAndClubId(currentUserId, clubIb)
+                .orElseThrow(() -> new ResourceNotFoundException("无此申请记录"));
+        applicationRecordRepository.deleteById(recordEntity.getId());
+
     }
 }
