@@ -28,6 +28,8 @@ public class ReleaseActivityPostRequestDTO {
     private Integer numberLimitation;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("open")
+    private Boolean open;
 
     public Activity toActivity() {
         return Activity.builder()
@@ -40,13 +42,14 @@ public class ReleaseActivityPostRequestDTO {
                 .numberLimitation(numberLimitation)
                 .description(description)
                 .status(0)
+                .open(open ? 1 : 0)
                 .numberThumbsUp(0)
                 .build();
     }
 
     public void check() {
         if (StringUtils.isEmpty(name)) {
-            throw new ValidationException("活动名称不能为NULL或空");
+            throw new ValidationException("活动名称未填");
         }
         if (name.length() > 100) {
             throw new ValidationException("活动名称过长");
@@ -73,8 +76,16 @@ public class ReleaseActivityPostRequestDTO {
             throw new ValidationException("活动报名截止时间不能在当前时间之前");
         }
 
+        if (numberLimitation < 0) {
+            throw new ValidationException("报名数量上限不能为负");
+        }
+
         if (description != null && description.length() > 2000) {
             throw new ValidationException("活动描述过长");
+        }
+
+        if (open == null) {
+            throw new ValidationException("未指定是否公开活动");
         }
     }
 }

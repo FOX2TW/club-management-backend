@@ -1,0 +1,101 @@
+package com.tw.clubmanagement.controller.representation;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tw.clubmanagement.model.Activity;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Data
+@Builder
+public class VisibleActivityGetResponseDTO {
+    @JsonProperty("id")
+    private Integer id;
+    @JsonProperty("clubId")
+    private Integer clubId;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("picture")
+    private String themePicture;
+    @JsonProperty("description")
+    private String description;
+    @JsonProperty("status")
+    private Integer status;
+    @JsonProperty("manager")
+    private Boolean manager;
+    @JsonProperty("recruiting")
+    private Boolean recruiting;
+
+    @JsonProperty("thumbsUp")
+    private Integer numberThumbsUp;
+
+    @JsonProperty("joined")
+    private Boolean joined;
+    @JsonProperty("memberVisible")
+    private Boolean memberVisible;
+    @JsonProperty("open")
+    private Boolean open;
+
+    public static List<VisibleActivityGetResponseDTO> fromActivitiesWithRole(List<Activity> joinedActivities,
+                                                                             List<Activity> memberVisibleActivities,
+                                                                             List<Activity> openActivities,
+                                                                             List<Integer> managedClubIds) {
+        Set<Integer> clubIdSet = new HashSet<>(managedClubIds);
+        Map<Integer, Integer> memberVisibleActivityIdMap =
+                memberVisibleActivities.stream().collect(Collectors.toMap(Activity::getId, Activity::getId));
+
+        Map<Integer, VisibleActivityGetResponseDTO> idVisibleMap =
+                joinedActivities.stream().map(activity -> VisibleActivityGetResponseDTO.builder()
+                        .id(activity.getId())
+                        .clubId(activity.getClubId())
+                        .name(activity.getName())
+                        .themePicture(activity.getThemePicture())
+                        .description(activity.getDescription())
+                        .status(activity.getStatus())
+                        .manager(clubIdSet.contains(activity.getClubId()))
+                        .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .numberThumbsUp(activity.getNumberThumbsUp())
+                        .joined(true)
+                        .memberVisible(memberVisibleActivityIdMap.containsKey(activity.getId()))
+                        .open(activity.getOpen() == 1)
+                        .build()).collect(Collectors.toMap(
+                        VisibleActivityGetResponseDTO::getId,
+                        visibleActivityGetResponseDTO -> visibleActivityGetResponseDTO));
+
+        memberVisibleActivities.forEach(activity -> idVisibleMap.putIfAbsent(activity.getId(),
+                VisibleActivityGetResponseDTO.builder()
+                        .id(activity.getId())
+                        .clubId(activity.getClubId())
+                        .name(activity.getName())
+                        .themePicture(activity.getThemePicture())
+                        .description(activity.getDescription())
+                        .status(activity.getStatus())
+                        .manager(clubIdSet.contains(activity.getClubId()))
+                        .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .numberThumbsUp(activity.getNumberThumbsUp())
+                        .joined(false)
+                        .memberVisible(true)
+                        .open(activity.getOpen() == 1)
+                        .build()));
+
+        openActivities.forEach(activity -> idVisibleMap.putIfAbsent(activity.getId(),
+                VisibleActivityGetResponseDTO.builder()
+                        .id(activity.getId())
+                        .clubId(activity.getClubId())
+                        .name(activity.getName())
+                        .themePicture(activity.getThemePicture())
+                        .description(activity.getDescription())
+                        .status(activity.getStatus())
+                        .manager(clubIdSet.contains(activity.getClubId()))
+                        .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .numberThumbsUp(activity.getNumberThumbsUp())
+                        .joined(false)
+                        .memberVisible(false)
+                        .open(true)
+                        .build()));
+
+        return new ArrayList<>(idVisibleMap.values());
+    }
+}
