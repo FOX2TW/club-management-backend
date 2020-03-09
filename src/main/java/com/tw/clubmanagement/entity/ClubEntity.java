@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.entity;
 
+import com.tw.clubmanagement.model.ClubApplication;
 import com.tw.clubmanagement.model.ClubInformation;
 import lombok.Data;
 
@@ -26,8 +27,20 @@ public class ClubEntity extends BaseEntity {
                 .id(id)
                 .name(name)
                 .type(type)
+                .picture(picture)
                 .approveStatus(approveStatus)
                 .introduction(introduction)
+                .build();
+    }
+
+    public ClubApplication toClubApplication() {
+        return ClubApplication.builder()
+                .id(id)
+                .name(name)
+                .type(type)
+                .picture(picture)
+                .introduction(introduction)
+                .applyDate(this.getCreatedAt())
                 .build();
     }
 }

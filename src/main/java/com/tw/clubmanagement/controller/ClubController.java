@@ -104,4 +104,10 @@ public class ClubController {
                             @RequestHeader Integer currentUserId) {
         clubService.processClub(clubProcessDTO, currentUserId);
     }
+
+    @GetMapping("/application")
+    @ApiOperation(value = "查询用户创建俱乐部申请")
+    public ClubApplicationGetDTO getClubApplication(@RequestHeader Long currentUserId) {
+        return clubService.getClubApplication(currentUserId);
+    }
 }

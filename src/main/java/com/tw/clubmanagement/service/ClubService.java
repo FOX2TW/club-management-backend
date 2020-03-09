@@ -9,6 +9,7 @@ import com.tw.clubmanagement.entity.UserEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
+import com.tw.clubmanagement.model.ClubApplication;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.model.UserInformation;
@@ -36,15 +37,17 @@ public class ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ApplicationRecordRepository applicationRecordRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final Mapper beanMapper;
 
     @Autowired
     public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository,
-                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, Mapper beanMapper) {
+                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, UserService userService, Mapper beanMapper) {
         this.clubRepository = clubRepository;
         this.clubMemberRepository = clubMemberRepository;
         this.applicationRecordRepository = applicationRecordRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
         this.beanMapper = beanMapper;
     }
 
@@ -198,5 +201,13 @@ public class ClubService {
         clubMemberEntity.setUserId((int) clubEntity.getCreatedBy());
         clubMemberEntity.setManagerFlag(true);
         clubMemberRepository.save(clubMemberEntity);
+    }
+
+    public ClubApplicationGetDTO getClubApplication(Long creatorId) {
+        UserInformation userInformation = userService.getUserInformation(Math.toIntExact(creatorId));
+        return ClubApplicationGetDTO.builder()
+                .applications(clubRepository.findByCreatedByAndProcessStatus(creatorId, false).stream()
+                                .map(ClubEntity::toClubApplication).collect(Collectors.toList()))
+                .creatorName(userInformation.getUsername()).build();
     }
 }

@@ -32,7 +32,7 @@ public class AccessPermissionInterceptor implements HandlerInterceptor {
 
         AccessPermission accessPermission = method.getAnnotation(AccessPermission.class);
         if (accessPermission != null || handlerMethod.getBeanType().getAnnotation(AccessPermission.class) != null) {
-            Integer accessId = Integer.valueOf(request.getHeader("accessId"));
+            Integer accessId = Integer.valueOf(request.getHeader("currentUserId"));
             String roleName = accessPermission.hasRole();
             Role role = securityService.findByName(roleName);
             UserRole userRole = securityService.findByUserIdAndRoleId(accessId, role.getId());
