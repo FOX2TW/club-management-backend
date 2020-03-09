@@ -6,7 +6,7 @@ import lombok.Data;
 @Builder
 @Data
 public class MemberInfo {
-    private Integer userId;
-    private String userName;
-    private String picture;
+    private Integer id;
+    private String username;
+    private String profileImagePath;
 }

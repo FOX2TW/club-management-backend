@@ -99,6 +99,7 @@ public class ClubService {
                 .address(clubEntity.getAddress())
                 .type(clubEntity.getType())
                 .members(clubMembers)
+                .createdAt(clubEntity.getCreatedAt())
                 .activities(new ArrayList<>()) // TODO set activities here
                 .build();
     }

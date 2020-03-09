@@ -25,9 +25,9 @@ public class ClubMemberEntity extends BaseEntity {
     }
     public MemberInfo toMemberInfo() {
         return MemberInfo.builder()
-                .userId(userId)
-                .userName("aaa")
-                .picture("www.baidu.com")
+                .id(userId)
+                .username("aaa") // TODO
+                .profileImagePath("www.baidu.com") // TODO
                 .build();
     }
 }
