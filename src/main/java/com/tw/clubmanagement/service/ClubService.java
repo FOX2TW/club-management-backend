@@ -50,6 +50,7 @@ public class ClubService {
         List<Integer> allJoinedClubIds = clubMembers.stream().map(ClubMember::getClubId).collect(Collectors.toList());
 
         return clubRepository.findAll().stream()
+                .filter(clubEntity -> clubEntity.isApproveStatus())
                 .sorted(Comparator.comparing(ClubEntity :: getCreatedAt).reversed())
                 .map(clubEntity -> beanMapper.map(clubEntity, ClubRepresentation.class))
                 .map(clubRepresentation -> clubRepresentation.isManager(accessId))
