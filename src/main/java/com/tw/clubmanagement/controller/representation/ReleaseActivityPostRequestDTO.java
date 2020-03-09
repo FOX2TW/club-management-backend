@@ -1,10 +1,12 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.Activity;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -18,11 +20,15 @@ public class ReleaseActivityPostRequestDTO {
     private String name;
     @JsonProperty("picture")
     private String themePicture;
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("startDate")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     @JsonProperty("endDate")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     @JsonProperty("endJoinDate")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date joinEndTime;
     @JsonProperty("limit")
     private Integer numberLimitation;

@@ -107,6 +107,7 @@ public class ActivityService {
         return activityOptional.get();
     }
 
+    @Transactional
     public void joinActivity(Integer userId, Integer activityId) {
         Optional<Activity> activityOptional = activityRepository.findById(activityId).map(ActivityEntity::toActivity);
         if (!activityOptional.isPresent()) {
@@ -130,6 +131,7 @@ public class ActivityService {
         activityParticipantService.join(activityParticipant);
     }
 
+    @Transactional
     public void cancelJoiningActivity(Integer userId, Integer activityId) {
         Optional<Activity> activityOptional = activityRepository.findById(activityId).map(ActivityEntity::toActivity);
         if (!activityOptional.isPresent()) {
@@ -141,6 +143,10 @@ public class ActivityService {
             throw new ValidationException("非俱乐部会员不能取消报名俱乐部的活动");
         }
 
+        if (activityParticipantService.countByActivityId(activityId) >= activityOptional.get().getNumberLimitation()) {
+            throw new ValidationException("活动报名已满");
+        }
+
         if (!activityParticipantService.findByActivityIdAndParticipantId(activityId, userId).isPresent()) {
             throw new ValidationException("未报过名");
         }
@@ -149,10 +155,12 @@ public class ActivityService {
 
     }
 
+    @Transactional
     public void thumbsUpActivity(Integer userId, Integer activityId) {
         // TODO
     }
 
+    @Transactional
     public void cancelThumbsUpActivity(Integer userId, Integer activityId) {
         // TODO
     }

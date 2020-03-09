@@ -57,4 +57,8 @@ public class ActivityParticipantService {
     public void deleteActivityParticipant(Integer activityId, Integer userId) {
         activityParticipantRepository.deleteByActivityIdAndParticipantId(activityId, userId);
     }
+
+    public int countByActivityId(Integer activityId) {
+        return  activityParticipantRepository.findAllByActivityId(activityId).size();
+    }
 }

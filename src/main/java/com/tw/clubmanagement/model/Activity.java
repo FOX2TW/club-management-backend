@@ -1,11 +1,13 @@
 package com.tw.clubmanagement.model;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class Activity {
     private Integer id;

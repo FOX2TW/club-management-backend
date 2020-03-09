@@ -1,9 +1,11 @@
 package com.tw.clubmanagement.model;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class ActivityParticipant {
     private Integer id;

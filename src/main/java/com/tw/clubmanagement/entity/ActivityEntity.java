@@ -1,7 +1,10 @@
 package com.tw.clubmanagement.entity;
 
 import com.tw.clubmanagement.model.Activity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -9,6 +12,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "t_activity")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class ActivityEntity extends BaseEntity {
     private Integer clubId;

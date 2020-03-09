@@ -1,13 +1,19 @@
 package com.tw.clubmanagement.entity;
 
 import com.tw.clubmanagement.model.ActivityParticipant;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "t_activity_participant")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class ActivityParticipantEntity extends BaseEntity {
     private Integer activityId;
