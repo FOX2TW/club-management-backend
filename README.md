@@ -342,6 +342,13 @@ req:
 }
 ```
 
+res:
+```
+{
+    activityId: 123
+}
+```
+
 ## 活动列表
 method: GET
 
@@ -372,7 +379,7 @@ res:
 ## 活动详情
 method: GET
 
-path: /api/activity/{acitivityId}
+path: /api/activity/{activityId}
 
 res:
 ```
