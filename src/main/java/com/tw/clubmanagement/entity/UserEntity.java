@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class UserEntity extends BaseEntity {
     private Integer id;
     private String username;
-    private String password;
+    private String email;
     private Integer status;
     private String phone;
     private String profileImagePath;
@@ -19,8 +19,7 @@ public class UserEntity extends BaseEntity {
         return UserInformation.builder()
                 .id(id)
                 .username(username)
-                .password(password)
-                .status(status)
+                .email(email)
                 .phone(phone)
                 .profileImagePath(profileImagePath)
                 .build();

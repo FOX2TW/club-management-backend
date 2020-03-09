@@ -134,4 +134,42 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="0.0.1-user-create" author="jun.li">
+        <sql>
+            drop table if exists t_user;
+
+            create table t_user(
+            `id` int unsigned not null primary key auto_increment,
+            `username` varchar(100) not null,
+            `phone` varchar(11) null,
+            `email` varchar(200) null,
+            `status` tinyint(1) not null default 1,
+            `profile_image_path` varchar(200),
+            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `created_by` int unsigned not null default 0,
+            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `updated_by` int unsigned not null default 0
+            ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
+    <changeSet id="0.0.1-init-user" author="jun.li">
+        <sql>
+            INSERT INTO `t_user` (`id`, `username`, `phone`, `email`, `status`, `profile_image_path`, `created_at`, `updated_at` )
+            VALUES
+            (1, 'Justin', '18788888888', 'j.l@thoughtworks.com', 1, 'http://b-ssl.duitang.com/uploads/item/201704/10/20170410095843_SEvMy.thumb.700_0.jpeg', '2020-03-09 16:08:57', '2020-03-09 16:13:14'),
+            (2, 'JiaXin', '18777777777', 'jiaxin.lithoughtworks.com', 1, 'http://pic4.zhimg.com/50/v2-7fece9a613445edb78271216c8c20c6d_hd.jpg', '2020-03-09 16:09:17', '2020-03-09 16:12:29'),
+            (3, 'LinHao', '18766666666', 'h.l@thoughtworks.com', 1, 'http://b-ssl.duitang.com/uploads/item/201509/30/20150930140213_ZCFSr.jpeg', '2020-03-09 16:09:35', '2020-03-09 16:12:52'),
+            (4, 'JiaWei', '18755555555', 'J.W@thoughtworks.com', 1, 'http://b-ssl.duitang.com/uploads/item/201802/20/20180220165946_RiGPS.thumb.700_0.jpeg', '2020-03-09 16:10:05', '2020-03-09 16:13:08');
+
+        </sql>
+    </changeSet>
+    <changeSet id="0.0.1-init-admin" author="jun.li">
+        <sql>
+            INSERT INTO `t_user_role` (`user_id`, `role_id`)
+            VALUES
+            (1, 1);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

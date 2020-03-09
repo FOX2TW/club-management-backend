@@ -5,14 +5,17 @@ import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.entity.ApplicationRecordEntity;
 import com.tw.clubmanagement.entity.ClubEntity;
 import com.tw.clubmanagement.entity.ClubMemberEntity;
+import com.tw.clubmanagement.entity.UserEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
+import com.tw.clubmanagement.model.UserInformation;
 import com.tw.clubmanagement.repository.ApplicationRecordRepository;
 import com.tw.clubmanagement.repository.ClubMemberRepository;
 import com.tw.clubmanagement.repository.ClubRepository;
+import com.tw.clubmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +35,16 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
     private final ApplicationRecordRepository applicationRecordRepository;
+    private final UserRepository userRepository;
     private final Mapper beanMapper;
 
     @Autowired
     public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository,
-                       ApplicationRecordRepository applicationRecordRepository, Mapper beanMapper) {
+                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, Mapper beanMapper) {
         this.clubRepository = clubRepository;
         this.clubMemberRepository = clubMemberRepository;
         this.applicationRecordRepository = applicationRecordRepository;
+        this.userRepository = userRepository;
         this.beanMapper = beanMapper;
     }
 
@@ -91,15 +96,19 @@ public class ClubService {
 
     public ClubDetailInfo getClubDetailInfo(Integer clubId) {
         ClubEntity clubEntity = clubRepository.findById(clubId).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
-        List<MemberInfo> clubMembers = clubMemberRepository.findByClubId(clubId).stream()
-                .map(ClubMemberEntity::toMemberInfo).collect(Collectors.toList());
+        List<Integer> memberIds = clubMemberRepository.findByClubId(clubId).stream()
+                .map(ClubMemberEntity::getUserId).collect(Collectors.toList());
+
+        List<UserInformation> members = userRepository.findAllById(memberIds).stream()
+                .map(UserEntity::toUserInformation).collect(Collectors.toList());
+
         return ClubDetailInfo.builder()
                 .introduction(clubEntity.getIntroduction())
                 .name(clubEntity.getName())
                 .picture(clubEntity.getPicture())
                 .address(clubEntity.getAddress())
                 .type(clubEntity.getType())
-                .members(clubMembers)
+                .members(members)
                 .createdAt(clubEntity.getCreatedAt())
                 .activities(new ArrayList<>()) // TODO set activities here
                 .build();

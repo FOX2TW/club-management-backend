@@ -1,6 +1,5 @@
 package com.tw.clubmanagement.entity;
 
-import com.tw.clubmanagement.controller.representation.MemberInfo;
 import com.tw.clubmanagement.model.ClubMember;
 import lombok.Data;
 
@@ -21,13 +20,6 @@ public class ClubMemberEntity extends BaseEntity {
                 .userId(userId)
                 .clubId(clubId)
                 .isManager(managerFlag)
-                .build();
-    }
-    public MemberInfo toMemberInfo() {
-        return MemberInfo.builder()
-                .id(userId)
-                .username("aaa") // TODO
-                .profileImagePath("www.baidu.com") // TODO
                 .build();
     }
 }

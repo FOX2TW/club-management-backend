@@ -32,20 +32,20 @@ public class ClubController {
 
     @GetMapping
     @ApiOperation(value = "获取所有俱乐部")
-    public List<ClubRepresentation> getClubs(@RequestHeader Integer accessId) {
-        return clubService.getAllClubs(accessId);
+    public List<ClubRepresentation> getClubs(@RequestHeader Integer currentUserId) {
+        return clubService.getAllClubs(currentUserId);
     }
 
     @PostMapping
     @ApiOperation(value = "创建俱乐部")
-    public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO, @RequestHeader Integer accessId) {
-        clubService.createClub(clubCreateDTO, accessId);
+    public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO, @RequestHeader Integer currentUserId) {
+        clubService.createClub(clubCreateDTO, currentUserId);
     }
 
     @PutMapping
     @ApiOperation(value = "更新俱乐部信息")
-    public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO, @RequestHeader Integer accessId) {
-        clubService.updateClub(clubUpdateDTO, accessId);
+    public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO, @RequestHeader Integer currentUserId) {
+        clubService.updateClub(clubUpdateDTO, currentUserId);
     }
 
     @GetMapping("{clubId}")
@@ -86,22 +86,22 @@ public class ClubController {
     @ApiOperation(value = "删除俱乐部成员")
     public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
                                  @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId,
-                                 @RequestHeader Integer accessId) throws AccessDeniedException {
-        clubService.deleteClubMember(clubIb, userId, accessId);
+                                 @RequestHeader Integer currentUserId) throws AccessDeniedException {
+        clubService.deleteClubMember(clubIb, userId, currentUserId);
     }
 
     @DeleteMapping("/{clubIb}/member")
     @ApiOperation(value = "退出俱乐部")
     public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
-                                 @RequestHeader Integer accessId) {
-        clubService.quitClub(clubIb, accessId);
+                                 @RequestHeader Integer currentUserId) {
+        clubService.quitClub(clubIb, currentUserId);
     }
 
     @PutMapping("/{clubIb}/process")
     @AccessPermission(hasRole = "ROLE_ADMIN")
     @ApiOperation(value = "超级管理员处理俱乐部创建")
     public void processClub(@RequestBody @Valid  ClubProcessDTO clubProcessDTO,
-                            @RequestHeader Integer accessId) {
-        clubService.processClub(clubProcessDTO, accessId);
+                            @RequestHeader Integer currentUserId) {
+        clubService.processClub(clubProcessDTO, currentUserId);
     }
 }

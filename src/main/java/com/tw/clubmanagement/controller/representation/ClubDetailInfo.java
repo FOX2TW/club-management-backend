@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.tw.clubmanagement.model.UserInformation;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class ClubDetailInfo {
     private String picture;
     private String introduction;
     private String address;
-    private List<MemberInfo> members;
+    private List<UserInformation> members;
     private List<ActivityInfo> activities;
     private Date createdAt;
 
