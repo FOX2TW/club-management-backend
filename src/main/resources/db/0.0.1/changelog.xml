@@ -126,4 +126,12 @@
             ) ENGINE=INNODB DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
+
+    <changeSet id="0.0.1-add-field-process_status-to-club" author="jun.li">
+        <addColumn tableName="t_club">
+            <column name="process_status" type="BOOLEAN" afterColumn="delete_status" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

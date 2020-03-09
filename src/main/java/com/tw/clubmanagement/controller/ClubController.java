@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller;
 
+import com.tw.clubmanagement.annotation.AccessPermission;
 import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.service.ClubService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,23 @@ public class ClubController {
     @PutMapping("/{clubIb}/member/{userId}")
     @ApiOperation(value = "删除俱乐部成员")
     public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
-                                 @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId) {
-        clubService.deleteClubMember(clubIb, userId);
+                                 @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId,
+                                 @RequestHeader Integer accessId) throws AccessDeniedException {
+        clubService.deleteClubMember(clubIb, userId, accessId);
+    }
+
+    @DeleteMapping("/{clubIb}/member")
+    @ApiOperation(value = "退出俱乐部")
+    public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
+                                 @RequestHeader Integer accessId) {
+        clubService.quitClub(clubIb, accessId);
+    }
+
+    @PutMapping("/{clubIb}/process")
+    @AccessPermission(hasRole = "ROLE_ADMIN")
+    @ApiOperation(value = "超级管理员处理俱乐部创建")
+    public void processClub(@RequestBody @Valid  ClubProcessDTO clubProcessDTO,
+                            @RequestHeader Integer accessId) {
+        clubService.processClub(clubProcessDTO, accessId);
     }
 }

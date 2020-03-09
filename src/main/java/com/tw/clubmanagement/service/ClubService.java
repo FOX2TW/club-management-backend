@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -146,14 +147,45 @@ public class ClubService {
         ClubMemberEntity clubMemberEntity = new ClubMemberEntity();
         clubMemberEntity.setClubId(recordEntity.getClubId());
         clubMemberEntity.setUserId(recordEntity.getUserId());
-        clubMemberEntity.setManagerFlag(0);
+        clubMemberEntity.setManagerFlag(false);
         clubMemberRepository.save(clubMemberEntity);
     }
 
-    public void deleteClubMember(Integer clubIb, Integer userId) {
+    public void deleteClubMember(Integer clubIb, Integer userId, Integer accessId) throws AccessDeniedException {
+        clubMemberRepository.findByClubIdAndUserIdAndManagerFlag(clubIb, accessId, true)
+                .orElseThrow(() -> new AccessDeniedException("仅俱乐部管理员有删除成员权限"));
+
         ClubMemberEntity clubMemberEntity = clubMemberRepository.findByClubIdAndUserId(clubIb, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("未找到对应记录"));
 
         clubMemberRepository.deleteById(clubMemberEntity.getId());
+    }
+
+    public void quitClub(Integer clubIb, Integer userId) {
+        ClubMemberEntity clubMemberEntity = clubMemberRepository.findByClubIdAndUserId(clubIb, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("未找到对应记录"));
+
+        clubMemberRepository.deleteById(clubMemberEntity.getId());
+    }
+
+    @Transactional
+    public void processClub(ClubProcessDTO clubProcessDTO, Integer accessId) {
+        ClubEntity clubEntity = clubRepository.findById(clubProcessDTO.getClubId())
+                .orElseThrow(() -> new ResourceNotFoundException("俱乐部不存在"));
+        if (clubEntity.isProcessStatus()) {
+            throw new ValidationException("该俱乐部创建申请已处理");
+        }
+
+        clubEntity.setUpdatedBy(accessId);
+        clubEntity.setProcessStatus(true);
+        clubEntity.setApproveStatus(clubProcessDTO.isApproveStatus());
+        clubRepository.save(clubEntity);
+
+        //将创建者自动加入成员，并设置成manager
+        ClubMemberEntity clubMemberEntity = new ClubMemberEntity();
+        clubMemberEntity.setClubId(clubEntity.getId());
+        clubMemberEntity.setUserId((int) clubEntity.getCreatedBy());
+        clubMemberEntity.setManagerFlag(true);
+        clubMemberRepository.save(clubMemberEntity);
     }
 }

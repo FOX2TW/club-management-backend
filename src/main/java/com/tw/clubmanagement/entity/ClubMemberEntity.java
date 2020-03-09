@@ -13,14 +13,14 @@ import javax.persistence.Table;
 public class ClubMemberEntity extends BaseEntity {
     private Integer userId;
     private Integer clubId;
-    private Integer managerFlag;
+    private boolean managerFlag;
 
     public ClubMember toClubMember() {
         return ClubMember.builder()
                 .id(id)
                 .userId(userId)
                 .clubId(clubId)
-                .isManager(managerFlag == 1)
+                .isManager(managerFlag)
                 .build();
     }
     public MemberInfo toMemberInfo() {
