@@ -29,7 +29,9 @@ public class ActivityParticipantEntity extends BaseEntity {
                 .participantId(activityParticipant.getParticipantId())
                 .role(activityParticipant.getRole())
                 .build();
+
         activityParticipantEntity.setId(activityParticipant.getId());
+
         return activityParticipantEntity;
     }
 }

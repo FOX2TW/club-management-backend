@@ -20,6 +20,7 @@ public class ActivityEntity extends BaseEntity {
     private Integer numberLimitation;
     private String description;
     private Integer status;
+    private Integer open;
     private Integer numberThumbsUp;
 
     public Activity toActivity() {
@@ -34,6 +35,7 @@ public class ActivityEntity extends BaseEntity {
                 .numberLimitation(numberLimitation)
                 .description(description)
                 .status(status)
+                .open(open)
                 .numberThumbsUp(numberThumbsUp)
                 .build();
     }
@@ -49,9 +51,12 @@ public class ActivityEntity extends BaseEntity {
                 .numberLimitation(activity.getNumberLimitation())
                 .description(activity.getDescription())
                 .status(activity.getStatus())
+                .open(activity.getOpen())
                 .numberThumbsUp(activity.getNumberThumbsUp())
                 .build();
+
         activityEntity.setId(activity.getId());
+
         return activityEntity;
     }
 }

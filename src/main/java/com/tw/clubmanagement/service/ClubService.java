@@ -75,6 +75,12 @@ public class ClubService {
                 .map(ClubMember::getClubId).collect(Collectors.toList());
     }
 
+    public List<Integer> getClubIds(Integer userId) {
+        return clubMemberRepository.findAllByUserId(userId).stream()
+                .map(ClubMemberEntity::toClubMember)
+                .map(ClubMember::getClubId).collect(Collectors.toList());
+    }
+
     public List<InvolvedClubGetResponseDTO> getInvolvedClub(Integer userId) {
         List<ClubMember> clubMembers = clubMemberRepository.findAllByUserId(userId)
                 .stream().map(ClubMemberEntity::toClubMember).collect(Collectors.toList());

@@ -5,9 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ActivityParticipantRepository extends JpaRepository<ActivityParticipantEntity, Integer> {
     List<ActivityParticipantEntity> findAllByParticipantId(Integer participantId);
+
     List<ActivityParticipantEntity> findAllByActivityId(Integer activityId);
+
+    void deleteByActivityId(Integer activityId);
+
+    Optional<ActivityParticipantEntity> findByActivityIdAndParticipantId(Integer activityId, Integer participantId);
+
+    void deleteByActivityIdAndParticipantId(Integer activityId, Integer participantId);
 }

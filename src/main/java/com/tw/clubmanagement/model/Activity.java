@@ -5,8 +5,8 @@ import lombok.Getter;
 
 import java.util.Date;
 
-@Builder
 @Getter
+@Builder
 public class Activity {
     private Integer id;
     private Integer clubId;
@@ -18,5 +18,6 @@ public class Activity {
     private Integer numberLimitation;
     private String description;
     private Integer status;
+    private Integer open;
     private Integer numberThumbsUp;
 }
