@@ -1,9 +1,9 @@
 package com.tw.clubmanagement.controller;
 
-import com.tw.clubmanagement.annotation.AccessPermission;
 import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.service.ClubService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,31 +29,37 @@ public class ClubController {
     }
 
     @GetMapping
+    @ApiOperation(value = "获取所有俱乐部")
     public List<ClubRepresentation> getClubs(@RequestHeader Integer accessId) {
         return clubService.getAllClubs(accessId);
     }
 
     @PostMapping
+    @ApiOperation(value = "创建俱乐部")
     public void createClub(@RequestBody @Valid ClubCreateDTO clubCreateDTO, @RequestHeader Integer accessId) {
         clubService.createClub(clubCreateDTO, accessId);
     }
 
     @PutMapping
+    @ApiOperation(value = "更新俱乐部信息")
     public void updateClub(@RequestBody @Valid ClubUpdateDTO clubUpdateDTO, @RequestHeader Integer accessId) {
         clubService.updateClub(clubUpdateDTO, accessId);
     }
 
     @GetMapping("{clubId}")
+    @ApiOperation(value = "查询俱乐部详情")
     public ClubDetailInfo getClubDetailInfo(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE) Integer clubId) {
         return clubService.getClubDetailInfo(clubId);
     }
 
     @GetMapping("type")
+    @ApiOperation(value = "获取俱乐部类型")
     public List<ClubTypeRepresentation> getClubTypes() {
         return clubService.getAllClubTypes();
     }
 
     @GetMapping("/user/{userId}")
+    @ApiOperation(value = "查询用户参与的俱乐部")
     public List<InvolvedClubGetResponseDTO> getInvolvedClubs(@PathVariable String userId) {
         if (!POSITIVE_PATTERN.matcher(userId).matches()) {
             throw new ValidationException(USERID_INVALID_MESSAGE);
@@ -63,16 +69,19 @@ public class ClubController {
     }
 
     @PostMapping("join")
+    @ApiOperation(value = "申请加入俱乐部")
     public void createApplicationRecord(@RequestBody @Valid ApplcationRecordCreateDTO applcationRecordCreateDTO) {
         clubService.createApplicationRecord(applcationRecordCreateDTO);
     }
 
     @PutMapping("club/member")
+    @ApiOperation(value = "审批俱乐部成员")
     public void processApplication(@RequestBody @Valid ApplcationProcessDTO processDTO) {
         clubService.processApplication(processDTO);
     }
 
     @PutMapping("/{clubIb}/member/{userId}")
+    @ApiOperation(value = "删除俱乐部成员")
     public void deleteClubMember(@PathVariable(value = "clubIb") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubIb,
                                  @PathVariable(value = "userId") @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer userId) {
         clubService.deleteClubMember(clubIb, userId);
