@@ -11,7 +11,6 @@ import lombok.Data;
 public class UserInformationGetResponseDTO {
     private Integer id;
     private String username;
-    private Integer status;
     private String phone;
     private String email;
     private String profileImagePath;
