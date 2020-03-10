@@ -302,4 +302,18 @@ public class ClubService {
 
         return applicationDTOS;
     }
+
+    public void deleteClub(Integer clubId, Integer currentUserId) throws AccessDeniedException {
+        ClubEntity clubEntity = clubRepository.findById(clubId)
+                .orElseThrow(() -> new ResourceNotFoundException("俱乐部不存在"));
+        if (clubEntity.getCreatedBy() != currentUserId) {
+            throw new AccessDeniedException("仅能删除自己创建的俱乐部");
+        }
+
+        clubRepository.deleteById(clubId);
+    }
+
+    public boolean isClubMember(Integer clubId, Integer userId) {
+        return clubMemberRepository.findByClubIdAndUserId(clubId, userId).isPresent();
+    }
 }

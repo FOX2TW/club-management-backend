@@ -2,7 +2,6 @@ package com.tw.clubmanagement.controller;
 
 import com.tw.clubmanagement.annotation.AccessPermission;
 import com.tw.clubmanagement.controller.representation.*;
-import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.ClubApplication;
 import com.tw.clubmanagement.service.ClubService;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +48,13 @@ public class ClubController {
         clubService.updateClub(clubUpdateDTO, currentUserId);
     }
 
+    @DeleteMapping("{clubId}")
+    @ApiOperation(value = "删除俱乐部")
+    public void deleteClub(@PathVariable(value = "clubId") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
+                           @RequestHeader Integer currentUserId) throws AccessDeniedException {
+        clubService.deleteClub(clubId, currentUserId);
+    }
+
     @GetMapping("{clubId}")
     @ApiOperation(value = "查询俱乐部详情")
     public ClubDetailInfo getClubDetailInfo(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE) Integer clubId) {
@@ -61,14 +67,11 @@ public class ClubController {
         return clubService.getAllClubTypes();
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     @ApiOperation(value = "查询用户参与的俱乐部")
-    public List<InvolvedClubGetResponseDTO> getInvolvedClubs(@PathVariable String userId) {
-        if (!POSITIVE_PATTERN.matcher(userId).matches()) {
-            throw new ValidationException(USERID_INVALID_MESSAGE);
-        }
-
-        return clubService.getInvolvedClub(Integer.valueOf(userId));
+    public List<InvolvedClubGetResponseDTO> getInvolvedClubs(@RequestHeader
+                                                                 @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer currentUserId) {
+        return clubService.getInvolvedClub(currentUserId);
     }
 
     @PostMapping("join")
@@ -113,7 +116,6 @@ public class ClubController {
         return clubService.getClubApplication(currentUserId);
     }
 
-
     @GetMapping("/join/application")
     @ApiOperation(value = "查询用户加入俱乐部申请")
     public List<JoinApplicationDTO> getJoinApplications(@RequestHeader Integer currentUserId) {
@@ -138,6 +140,13 @@ public class ClubController {
     @ApiOperation(value = "manager查询所有加入俱乐部申请")
     public List<JoinApplicationDTO> getJoinApplicationsByAdmin(@RequestHeader Integer currentUserId) {
         return clubService.getJoinApplicationsByManager(currentUserId);
+    }
+
+    @GetMapping("/member/{clubId}")
+    @ApiOperation(value = "判断当前用户是否加入相应俱乐部")
+    public boolean isClubMember(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
+                                @RequestHeader Integer currentUserId) {
+        return clubService.isClubMember(clubId, currentUserId);
     }
 
 }
