@@ -37,6 +37,7 @@ public class ApplicationRecordEntity extends BaseEntity {
         return JoinApplicationDTO.builder()
                 .clubId(clubId)
                 .reason(reason)
+                .applicantId(userId)
                 .applyDate(this.getCreatedAt())
                 .build();
     }

@@ -1,14 +1,15 @@
 package com.tw.clubmanagement.entity;
 
 import com.tw.clubmanagement.model.UserInformation;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "t_user")
+@Data
 public class UserEntity extends BaseEntity {
-    private Integer id;
     private String username;
     private String email;
     private Integer status;

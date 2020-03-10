@@ -3,6 +3,7 @@ package com.tw.clubmanagement.controller;
 import com.tw.clubmanagement.annotation.AccessPermission;
 import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.exception.ValidationException;
+import com.tw.clubmanagement.model.ClubApplication;
 import com.tw.clubmanagement.service.ClubService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,14 +108,14 @@ public class ClubController {
 
     @GetMapping("/application")
     @ApiOperation(value = "查询用户创建俱乐部申请")
-    public ClubApplicationGetDTO getClubApplication(@RequestHeader Long currentUserId) {
+    public List<ClubApplication> getClubApplication(@RequestHeader Integer currentUserId) {
         return clubService.getClubApplication(currentUserId);
     }
 
 
     @GetMapping("/join/application")
     @ApiOperation(value = "查询用户加入俱乐部申请")
-    public List<JoinApplicationDTO> getJoinApplications(@RequestHeader Long currentUserId) {
+    public List<JoinApplicationDTO> getJoinApplications(@RequestHeader Integer currentUserId) {
         return clubService.getJoinApplications(currentUserId);
     }
 
@@ -124,4 +125,18 @@ public class ClubController {
                                                           @RequestHeader Integer currentUserId) {
         clubService.cancelJoinApplication(clubId, currentUserId);
     }
+
+    @GetMapping("/application/admin")
+    @ApiOperation(value = "admin查询所有创建俱乐部申请")
+    @AccessPermission(hasRole = "ROLE_ADMIN")
+    public List<ClubApplication> getCreateApplicationsByAdmin(@RequestHeader Integer currentUserId) {
+        return clubService.getCreateApplicationsByAdmin();
+    }
+
+    @GetMapping("/application/manager")
+    @ApiOperation(value = "manager查询所有加入俱乐部申请")
+    public List<JoinApplicationDTO> getJoinApplicationsByAdmin(@RequestHeader Integer currentUserId) {
+        return clubService.getJoinApplicationsByManager(currentUserId);
+    }
+
 }

@@ -6,10 +6,7 @@ import com.tw.clubmanagement.entity.*;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
-import com.tw.clubmanagement.model.Activity;
-import com.tw.clubmanagement.model.ClubInformation;
-import com.tw.clubmanagement.model.ClubMember;
-import com.tw.clubmanagement.model.UserInformation;
+import com.tw.clubmanagement.model.*;
 import com.tw.clubmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,6 +147,13 @@ public class ClubService {
     }
 
     public void createApplicationRecord(ApplcationRecordCreateDTO applcationRecordCreateDTO) {
+        Optional<ApplicationRecordEntity> applicationRecordEntityOptional = applicationRecordRepository.
+                findByUserIdAndClubId(applcationRecordCreateDTO.getUserId(), applcationRecordCreateDTO.getClubId());
+        if (applicationRecordEntityOptional.isPresent()
+                && applicationRecordEntityOptional.get().getStatus() == ApplicationRecordEntity.UNPROCESSED) {
+            throw new ValidationException("你已经申请过加入该俱乐部，请等待管理员审核");
+        }
+
         ApplicationRecordEntity recordEntity = applcationRecordCreateDTO.toApplicationRecordEntity();
         applicationRecordRepository.save(recordEntity);
     }
@@ -211,17 +215,18 @@ public class ClubService {
         clubMemberRepository.save(clubMemberEntity);
     }
 
-    public ClubApplicationGetDTO getClubApplication(Long creatorId) {
-        UserInformation userInformation = userService.getUserInformation(Math.toIntExact(creatorId));
-        return ClubApplicationGetDTO.builder()
-                .applications(clubRepository.findByCreatedByAndProcessStatus(creatorId, false).stream()
-                        .map(ClubEntity::toClubApplication).collect(Collectors.toList()))
-                .creatorName(userInformation.getUsername()).build();
+    public List<ClubApplication> getClubApplication(Integer creatorId) {
+        UserInformation userInformation = userService.getUserInformation(creatorId);
+        List<ClubApplication> clubApplications = clubRepository.findByCreatedByAndProcessStatus(creatorId, false).stream()
+                .map(ClubEntity::toClubApplication).collect(Collectors.toList());
+
+        clubApplications.forEach(clubApplication -> clubApplication.setCreatorName(userInformation.getUsername()));
+        return clubApplications;
     }
 
-    public List<JoinApplicationDTO> getJoinApplications(Long currentUserId) {
+    public List<JoinApplicationDTO> getJoinApplications(Integer currentUserId) {
         List<ApplicationRecordEntity> applicationRecordEntities =
-                applicationRecordRepository.findByUserIdAndStatus(Math.toIntExact(currentUserId), ApplicationRecordEntity.UNPROCESSED);
+                applicationRecordRepository.findByUserIdAndStatus(currentUserId, ApplicationRecordEntity.UNPROCESSED);
         List<Integer> clubIds = applicationRecordEntities.stream()
                 .map(ApplicationRecordEntity::getClubId).collect(Collectors.toList());
         Map<Integer, ClubEntity> clubEntityMap = clubRepository.findAllById(clubIds).stream()
@@ -230,13 +235,27 @@ public class ClubService {
         List<JoinApplicationDTO> applicationDTOS = applicationRecordEntities.stream()
                 .map(ApplicationRecordEntity::toJoinApplicationDTO).collect(Collectors.toList());
 
-        UserInformation userInformation = userService.getUserInformation(Math.toIntExact(currentUserId));
+        UserInformation userInformation = userService.getUserInformation(currentUserId);
         applicationDTOS.forEach(joinApplicationDTO -> {
             joinApplicationDTO.setClubName(clubEntityMap.get(joinApplicationDTO.getClubId()).getName());
             joinApplicationDTO.setApplicantName(userInformation.getUsername());
         });
 
         return applicationDTOS;
+    }
+
+    public List<ClubApplication> getCreateApplicationsByAdmin() {
+        List<ClubEntity> clubEntities = clubRepository.findByProcessStatus(false);
+        List<ClubApplication> clubApplications = clubEntities.stream()
+                .map(ClubEntity::toClubApplication).collect(Collectors.toList());
+        List<Integer> creatorIds = clubEntities.stream()
+                .map(clubEntity -> clubEntity.getCreatedBy()).distinct().collect(Collectors.toList());
+        Map<Integer, UserEntity> userEntityMap = userRepository.findAllById(creatorIds)
+                .stream().collect(Collectors.toMap(u -> u.getId(), u -> u));
+        clubApplications.forEach(clubApplication ->
+                clubApplication.setCreatorName(userEntityMap.get(clubApplication.getCreatorId()).getUsername()));
+
+        return clubApplications;
     }
 
     public void cancelJoinApplication(Integer clubIb, Integer currentUserId) {
@@ -251,5 +270,34 @@ public class ClubService {
                 .filter(activityEntity -> activityEntity.getEndTime().after(new Date()))
                 .sorted(Comparator.comparing(ActivityEntity::getStartTime))
                 .map(ActivityEntity::toActivity).collect(Collectors.toList());
+    }
+
+    public List<JoinApplicationDTO> getJoinApplicationsByManager(Integer managerId) {
+
+        List<ClubMemberEntity> clubMemberEntities = clubMemberRepository.findByUserIdAndManagerFlag(managerId, true);
+        List<Integer> allManagedClubIds = clubMemberEntities.stream()
+                .map(ClubMemberEntity::getClubId)
+                .collect(Collectors.toList());
+        List<ApplicationRecordEntity> recordEntities = applicationRecordRepository
+                .findByStatusAndClubIdIn(ApplicationRecordEntity.UNPROCESSED, allManagedClubIds);
+
+        List<Integer> clubIds = recordEntities.stream()
+                .map(ApplicationRecordEntity::getClubId).collect(Collectors.toList());
+        Map<Integer, ClubEntity> clubEntityMap = clubRepository.findAllById(clubIds).stream()
+                .collect(Collectors.toMap(c -> c.getId(), c -> c));
+
+        List<Integer> userIds = recordEntities.stream()
+                .map(ApplicationRecordEntity::getUserId).collect(Collectors.toList());
+        Map<Integer, UserEntity> userEntityMap = userRepository.findAllById(userIds).stream()
+                .collect(Collectors.toMap(u -> u.getId(), u -> u));
+
+        List<JoinApplicationDTO> applicationDTOS = recordEntities.stream()
+                .map(ApplicationRecordEntity::toJoinApplicationDTO).collect(Collectors.toList());
+        applicationDTOS.forEach(joinApplicationDTO -> {
+                joinApplicationDTO.setApplicantName(userEntityMap.get(joinApplicationDTO.getApplicantId()).getUsername());
+                joinApplicationDTO.setClubName(clubEntityMap.get(joinApplicationDTO.getClubId()).getName());
+        });
+
+        return applicationDTOS;
     }
 }

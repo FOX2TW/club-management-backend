@@ -16,4 +16,6 @@ public interface ClubMemberRepository extends JpaRepository<ClubMemberEntity, In
     Optional<ClubMemberEntity> findByClubIdAndUserId(Integer clubIb, Integer userId);
 
     Optional<ClubMemberEntity> findByClubIdAndUserIdAndManagerFlag(Integer clubIb, Integer userId, boolean managerFlag);
+
+    List<ClubMemberEntity> findByUserIdAndManagerFlag(Integer managerId, boolean managerFlag);
 }

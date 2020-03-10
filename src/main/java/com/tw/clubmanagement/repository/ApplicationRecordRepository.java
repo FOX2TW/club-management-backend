@@ -9,7 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface ApplicationRecordRepository extends JpaRepository<ApplicationRecordEntity, Integer> {
-    List<ApplicationRecordEntity> findByUserIdAndStatus(Integer userId, Integer unprocessed);
+    List<ApplicationRecordEntity> findByUserIdAndStatus(Integer userId, Integer status);
 
     Optional<ApplicationRecordEntity> findByUserIdAndClubId(Integer userId, Integer clubIb);
+
+    List<ApplicationRecordEntity> findByStatus(Integer status);
+
+    List<ApplicationRecordEntity> findByStatusAndClubIdIn(Integer status, List<Integer> clubIds);
 }

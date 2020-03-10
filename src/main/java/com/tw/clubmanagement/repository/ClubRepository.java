@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ClubRepository extends JpaRepository<ClubEntity, Integer> {
-    List<ClubEntity> findByCreatedByAndProcessStatus(Long createdBy, boolean processStatus);
+    List<ClubEntity> findByCreatedByAndProcessStatus(Integer createdBy, boolean processStatus);
+
+    List<ClubEntity> findByProcessStatus(boolean processStatus);
 }

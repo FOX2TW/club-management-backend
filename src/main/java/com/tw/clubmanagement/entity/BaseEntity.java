@@ -18,12 +18,12 @@ public class BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   protected Integer id;
 
-  private long createdBy;
+  private int createdBy;
 
   @CreationTimestamp
   private Date createdAt;
 
-  private long updatedBy;
+  private int updatedBy;
 
   @UpdateTimestamp
   private Date updatedAt;

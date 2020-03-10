@@ -40,6 +40,7 @@ public class ClubEntity extends BaseEntity {
                 .type(type)
                 .picture(picture)
                 .introduction(introduction)
+                .creatorId(this.getCreatedBy())
                 .applyDate(this.getCreatedAt())
                 .build();
     }
