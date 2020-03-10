@@ -7,6 +7,7 @@ import com.tw.clubmanagement.model.ActivityParticipant;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +30,21 @@ public class InvolvedActivityGetResponseDTO {
     @JsonProperty("role")
     private Integer role;
 
+    private static Integer status(Date joinEndTime, Date start, Date end) {
+        Date now = new Date();
+        if (joinEndTime != null && now.before(joinEndTime)) {
+            return 0;
+        }
+        if (start != null && now.before(start)) {
+            return 1;
+        }
+        if (end != null && now.before(end)) {
+            return 2;
+        }
+
+        return 3;
+    }
+
     public static List<InvolvedActivityGetResponseDTO> fromActivitiesWithParticipants(
             List<Activity> activities, List<ActivityParticipant> activityParticipants) {
         if (activityParticipants.size() != activities.size()) {
@@ -43,7 +59,7 @@ public class InvolvedActivityGetResponseDTO {
                 .name(activity.getName())
                 .themePicture(activity.getThemePicture())
                 .description(activity.getDescription())
-                .status(activity.getStatus())
+                .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
                 .numberThumbsUp(activity.getNumberThumbsUp())
                 .role(activityIdRoleMap.get(activity.getId()))
                 .build()).collect(Collectors.toList());

@@ -56,6 +56,21 @@ public class ActivityDetailsGetResponseDTO {
     @JsonProperty("memberVisible")
     private Boolean memberVisible;
 
+    private static Integer status(Date joinEndTime, Date start, Date end) {
+        Date now = new Date();
+        if (joinEndTime != null && now.before(joinEndTime)) {
+            return 0;
+        }
+        if (start != null && now.before(start)) {
+            return 1;
+        }
+        if (end != null && now.before(end)) {
+            return 2;
+        }
+
+        return 3;
+    }
+
     public static ActivityDetailsGetResponseDTO from(Activity activity,
                                                      List<UserInformation> participantIds,
                                                      List<Integer> managedClubIds,
@@ -73,7 +88,7 @@ public class ActivityDetailsGetResponseDTO {
                 .joinEndTime(activity.getJoinEndTime())
                 .numberLimitation(activity.getNumberLimitation())
                 .description(activity.getDescription())
-                .status(activity.getStatus())
+                .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
                 .open(activity.getOpen())
                 .numberThumbsUp(activity.getNumberThumbsUp())
                 .joinedUsers(participantIds.stream()

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,6 +122,10 @@ public class ActivityService {
 
         if (activityParticipantService.findByActivityIdAndParticipantId(activityId, userId).isPresent()) {
             throw new ValidationException("已经报名");
+        }
+
+        if (new Date().after(activityOptional.get().getJoinEndTime())) {
+            throw new ValidationException("报名时间已截止");
         }
 
         if (activityOptional.get().getNumberLimitation() != 0 &&

@@ -34,6 +34,21 @@ public class JoinedActivityGetResponseDTO {
     @JsonProperty("joinEndTime")
     private Date joinEndTime;
 
+    private static Integer status(Date joinEndTime, Date start, Date end) {
+        Date now = new Date();
+        if (joinEndTime != null && now.before(joinEndTime)) {
+            return 0;
+        }
+        if (start != null && now.before(start)) {
+            return 1;
+        }
+        if (end != null && now.before(end)) {
+            return 2;
+        }
+
+        return 3;
+    }
+
     public static List<JoinedActivityGetResponseDTO> fromActivityWithRole(List<Activity> joinedActivities,
                                                                           List<Integer> managedClubIds,
                                                                           Map<Integer, String> clubIdNameMap) {
@@ -46,7 +61,7 @@ public class JoinedActivityGetResponseDTO {
                 .name(activity.getName())
                 .themePicture(activity.getThemePicture())
                 .description(activity.getDescription())
-                .status(activity.getStatus())
+                .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
                 .manager(clubIdSet.contains(activity.getClubId()))
                 .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
                 .joinEndTime(activity.getJoinEndTime())
