@@ -11,6 +11,7 @@ import com.tw.clubmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.nio.file.AccessDeniedException;
 import java.util.*;
@@ -146,15 +147,16 @@ public class ClubService {
         clubRepository.save(clubEntity);
     }
 
-    public void createApplicationRecord(ApplcationRecordCreateDTO applcationRecordCreateDTO) {
+    public void createApplicationRecord(ApplcationRecordCreateDTO applcationRecordCreateDTO, Integer applicantId) {
         Optional<ApplicationRecordEntity> applicationRecordEntityOptional = applicationRecordRepository.
-                findByUserIdAndClubId(applcationRecordCreateDTO.getUserId(), applcationRecordCreateDTO.getClubId());
+                findByUserIdAndClubId(applicantId, applcationRecordCreateDTO.getClubId());
         if (applicationRecordEntityOptional.isPresent()
                 && applicationRecordEntityOptional.get().getStatus() == ApplicationRecordEntity.UNPROCESSED) {
             throw new ValidationException("你已经申请过加入该俱乐部，请等待管理员审核");
         }
 
         ApplicationRecordEntity recordEntity = applcationRecordCreateDTO.toApplicationRecordEntity();
+        recordEntity.setUserId(applicantId);
         applicationRecordRepository.save(recordEntity);
     }
 

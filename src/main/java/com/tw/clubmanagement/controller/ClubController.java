@@ -73,8 +73,9 @@ public class ClubController {
 
     @PostMapping("join")
     @ApiOperation(value = "申请加入俱乐部")
-    public void createApplicationRecord(@RequestBody @Valid ApplcationRecordCreateDTO applcationRecordCreateDTO) {
-        clubService.createApplicationRecord(applcationRecordCreateDTO);
+    public void createApplicationRecord(@RequestBody @Valid ApplcationRecordCreateDTO applcationRecordCreateDTO,
+                                        @RequestHeader Integer currentUserId) {
+        clubService.createApplicationRecord(applcationRecordCreateDTO, currentUserId);
     }
 
     @PutMapping("/member")
