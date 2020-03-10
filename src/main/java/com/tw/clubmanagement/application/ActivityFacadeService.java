@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ActivityFacadeService {
@@ -31,22 +32,24 @@ public class ActivityFacadeService {
     @Transactional
     public List<JoinedActivityGetResponseDTO> getJoinedActivities(Integer userId) {
         List<Integer> managedClubIds = activityService.getManagedClubIds(userId);
+        Map<Integer, String> clubIdNameMap = clubService.getIdNameMap();
 
         List<Activity> joinedActivities = activityService.getJoinedActivities(userId);
 
-        return JoinedActivityGetResponseDTO.fromActivityWithRole(joinedActivities, managedClubIds);
+        return JoinedActivityGetResponseDTO.fromActivityWithRole(joinedActivities, managedClubIds, clubIdNameMap);
     }
 
     @Transactional
     public List<VisibleActivityGetResponseDTO> getVisibleActivities(Integer userId) {
         List<Integer> managedClubIds = activityService.getManagedClubIds(userId);
+        Map<Integer, String> clubIdNameMap = clubService.getIdNameMap();
 
         List<Activity> joinedActivities = activityService.getJoinedActivities(userId);
         List<Activity> memberVisibleActivities = activityService.getMemberVisibleActivities(userId);
         List<Activity> openActivities = activityService.getOpenActivities();
 
         return VisibleActivityGetResponseDTO.fromActivitiesWithRole(
-                joinedActivities, memberVisibleActivities, openActivities, managedClubIds);
+                joinedActivities, memberVisibleActivities, openActivities, managedClubIds, clubIdNameMap);
     }
 
     public ActivityDetailsGetResponseDTO getActivityDetailsById(Integer userId, Integer activityId) {

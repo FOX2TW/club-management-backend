@@ -2,29 +2,21 @@ package com.tw.clubmanagement.service;
 
 import com.github.dozermapper.core.Mapper;
 import com.tw.clubmanagement.controller.representation.*;
-import com.tw.clubmanagement.entity.ApplicationRecordEntity;
-import com.tw.clubmanagement.entity.ClubEntity;
-import com.tw.clubmanagement.entity.ClubMemberEntity;
-import com.tw.clubmanagement.entity.UserEntity;
+import com.tw.clubmanagement.entity.*;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
+import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.model.UserInformation;
-import com.tw.clubmanagement.repository.ApplicationRecordRepository;
-import com.tw.clubmanagement.repository.ClubMemberRepository;
-import com.tw.clubmanagement.repository.ClubRepository;
-import com.tw.clubmanagement.repository.UserRepository;
+import com.tw.clubmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,17 +30,24 @@ public class ClubService {
     private final ApplicationRecordRepository applicationRecordRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ActivityRepository activityRepository;
     private final Mapper beanMapper;
 
     @Autowired
     public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository,
-                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, UserService userService, Mapper beanMapper) {
+                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository,
+                       UserService userService, ActivityRepository activityRepository, Mapper beanMapper) {
         this.clubRepository = clubRepository;
         this.clubMemberRepository = clubMemberRepository;
         this.applicationRecordRepository = applicationRecordRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.activityRepository = activityRepository;
         this.beanMapper = beanMapper;
+    }
+
+    public Map<Integer, String> getIdNameMap() {
+        return clubRepository.findAll().stream().collect(Collectors.toMap(ClubEntity::getId, ClubEntity::getName));
     }
 
     public List<ClubRepresentation> getAllClubs(Integer accessId) {
@@ -59,7 +58,7 @@ public class ClubService {
 
         return clubRepository.findAll().stream()
                 .filter(clubEntity -> clubEntity.isApproveStatus())
-                .sorted(Comparator.comparing(ClubEntity :: getCreatedAt).reversed())
+                .sorted(Comparator.comparing(ClubEntity::getCreatedAt).reversed())
                 .map(clubEntity -> beanMapper.map(clubEntity, ClubRepresentation.class))
                 .map(clubRepresentation -> clubRepresentation.isManager(accessId))
                 .map(clubRepresentation -> clubRepresentation.isJoin(allJoinedClubIds))
@@ -111,6 +110,8 @@ public class ClubService {
         List<UserInformation> members = userRepository.findAllById(memberIds).stream()
                 .map(UserEntity::toUserInformation).collect(Collectors.toList());
 
+        List<Activity> activities = getActivitiesByClubId(clubId);
+
         return ClubDetailInfo.builder()
                 .id(clubEntity.getId())
                 .introduction(clubEntity.getIntroduction())
@@ -120,7 +121,7 @@ public class ClubService {
                 .type(clubEntity.getType())
                 .members(members)
                 .createdAt(clubEntity.getCreatedAt())
-                .activities(new ArrayList<>()) // TODO set activities here
+                .activities(activities)
                 .build();
     }
 
@@ -214,7 +215,7 @@ public class ClubService {
         UserInformation userInformation = userService.getUserInformation(Math.toIntExact(creatorId));
         return ClubApplicationGetDTO.builder()
                 .applications(clubRepository.findByCreatedByAndProcessStatus(creatorId, false).stream()
-                                .map(ClubEntity::toClubApplication).collect(Collectors.toList()))
+                        .map(ClubEntity::toClubApplication).collect(Collectors.toList()))
                 .creatorName(userInformation.getUsername()).build();
     }
 
@@ -243,5 +244,12 @@ public class ClubService {
                 .orElseThrow(() -> new ResourceNotFoundException("无此申请记录"));
         applicationRecordRepository.deleteById(recordEntity.getId());
 
+    }
+
+    private List<Activity> getActivitiesByClubId(Integer clubId) {
+        return activityRepository.findAllByClubId(clubId).stream()
+                .filter(activityEntity -> activityEntity.getEndTime().after(new Date()))
+                .sorted(Comparator.comparing(ActivityEntity::getStartTime))
+                .map(ActivityEntity::toActivity).collect(Collectors.toList());
     }
 }

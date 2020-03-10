@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import lombok.Builder;
@@ -15,6 +16,8 @@ public class VisibleActivityGetResponseDTO {
     private Integer id;
     @JsonProperty("clubId")
     private Integer clubId;
+    @JsonProperty("clubName")
+    private String clubName;
     @JsonProperty("name")
     private String name;
     @JsonProperty("picture")
@@ -27,6 +30,9 @@ public class VisibleActivityGetResponseDTO {
     private Boolean manager;
     @JsonProperty("recruiting")
     private Boolean recruiting;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("joinEndTime")
+    private Date joinEndTime;
 
     @JsonProperty("thumbsUp")
     private Integer numberThumbsUp;
@@ -41,7 +47,8 @@ public class VisibleActivityGetResponseDTO {
     public static List<VisibleActivityGetResponseDTO> fromActivitiesWithRole(List<Activity> joinedActivities,
                                                                              List<Activity> memberVisibleActivities,
                                                                              List<Activity> openActivities,
-                                                                             List<Integer> managedClubIds) {
+                                                                             List<Integer> managedClubIds,
+                                                                             Map<Integer, String> clubIdNameMap) {
         Set<Integer> clubIdSet = new HashSet<>(managedClubIds);
         Map<Integer, Integer> memberVisibleActivityIdMap =
                 memberVisibleActivities.stream().collect(Collectors.toMap(Activity::getId, Activity::getId));
@@ -50,12 +57,14 @@ public class VisibleActivityGetResponseDTO {
                 joinedActivities.stream().map(activity -> VisibleActivityGetResponseDTO.builder()
                         .id(activity.getId())
                         .clubId(activity.getClubId())
+                        .clubName(clubIdNameMap.get(activity.getClubId()))
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
                         .status(activity.getStatus())
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .joinEndTime(activity.getJoinEndTime())
                         .numberThumbsUp(activity.getNumberThumbsUp())
                         .joined(true)
                         .memberVisible(memberVisibleActivityIdMap.containsKey(activity.getId()))
@@ -68,12 +77,14 @@ public class VisibleActivityGetResponseDTO {
                 VisibleActivityGetResponseDTO.builder()
                         .id(activity.getId())
                         .clubId(activity.getClubId())
+                        .clubName(clubIdNameMap.get(activity.getClubId()))
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
                         .status(activity.getStatus())
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .joinEndTime(activity.getJoinEndTime())
                         .numberThumbsUp(activity.getNumberThumbsUp())
                         .joined(false)
                         .memberVisible(true)
@@ -84,12 +95,14 @@ public class VisibleActivityGetResponseDTO {
                 VisibleActivityGetResponseDTO.builder()
                         .id(activity.getId())
                         .clubId(activity.getClubId())
+                        .clubName(clubIdNameMap.get(activity.getClubId()))
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
                         .status(activity.getStatus())
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                        .joinEndTime(activity.getJoinEndTime())
                         .numberThumbsUp(activity.getNumberThumbsUp())
                         .joined(false)
                         .memberVisible(false)

@@ -1,14 +1,12 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -16,6 +14,10 @@ import java.util.stream.Collectors;
 public class JoinedActivityGetResponseDTO {
     @JsonProperty("id")
     private Integer id;
+    @JsonProperty("clubId")
+    private Integer clubId;
+    @JsonProperty("clubName")
+    private String clubName;
     @JsonProperty("name")
     private String name;
     @JsonProperty("picture")
@@ -28,19 +30,26 @@ public class JoinedActivityGetResponseDTO {
     private Boolean manager;
     @JsonProperty("recruiting")
     private Boolean recruiting;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("joinEndTime")
+    private Date joinEndTime;
 
     public static List<JoinedActivityGetResponseDTO> fromActivityWithRole(List<Activity> joinedActivities,
-                                                                          List<Integer> managedClubIds) {
+                                                                          List<Integer> managedClubIds,
+                                                                          Map<Integer, String> clubIdNameMap) {
         Set<Integer> clubIdSet = new HashSet<>(managedClubIds);
 
         return joinedActivities.stream().map(activity -> JoinedActivityGetResponseDTO.builder()
                 .id(activity.getId())
+                .clubId(activity.getClubId())
+                .clubName(clubIdNameMap.get(activity.getClubId()))
                 .name(activity.getName())
                 .themePicture(activity.getThemePicture())
                 .description(activity.getDescription())
                 .status(activity.getStatus())
                 .manager(clubIdSet.contains(activity.getClubId()))
                 .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
+                .joinEndTime(activity.getJoinEndTime())
                 .build()).collect(Collectors.toList());
     }
 }

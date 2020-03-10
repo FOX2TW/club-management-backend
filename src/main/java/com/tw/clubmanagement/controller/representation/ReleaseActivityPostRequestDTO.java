@@ -66,14 +66,14 @@ public class ReleaseActivityPostRequestDTO {
             throw new ValidationException("活动主题图片路径过长");
         }
 
-        if (startTime.after(endTime)) {
+        if (startTime != null && endTime != null &&startTime.after(endTime)) {
             throw new ValidationException("活动起始时间不能在结束时间之后");
         }
-        if (joinEndTime != null && joinEndTime.after(startTime)) {
+        if (joinEndTime != null && startTime != null && joinEndTime.after(startTime)) {
             throw new ValidationException("活动报名截止时间不能在起始时间之后");
         }
         Date now = new Date();
-        if (startTime.before(now)) {
+        if (startTime != null && startTime.before(now)) {
             throw new ValidationException("活动起始时间不能在当前时间之前");
         }
         if (joinEndTime != null && joinEndTime.before(now)){
