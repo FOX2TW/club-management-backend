@@ -52,7 +52,7 @@
                 `name` varchar(100) not null COMMENT '名称',
                 `theme_picture` varchar(100) not null COMMENT '主题图片，通过文件路径指定',
                 `start_time` timestamp not null COMMENT '活动起始时间',
-                `end_time` timestamp not null COMMENT '活动结束时间',
+                `end_time` timestamp COMMENT '活动结束时间',
                 `join_end_time` timestamp not null COMMENT '报名截止时间',
                 `number_limitation` int unsigned COMMENT '参与者数量上限，0代表不限制',
                 `description` varchar(2000) COMMENT '活动描述',

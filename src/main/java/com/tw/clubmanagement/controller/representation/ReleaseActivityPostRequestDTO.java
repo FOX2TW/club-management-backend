@@ -6,7 +6,6 @@ import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.Activity;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -20,15 +19,14 @@ public class ReleaseActivityPostRequestDTO {
     private String name;
     @JsonProperty("picture")
     private String themePicture;
-    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("startDate")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     @JsonProperty("endDate")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     @JsonProperty("endJoinDate")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date joinEndTime;
     @JsonProperty("limit")
     private Integer numberLimitation;
@@ -71,14 +69,14 @@ public class ReleaseActivityPostRequestDTO {
         if (startTime.after(endTime)) {
             throw new ValidationException("活动起始时间不能在结束时间之后");
         }
-        if (joinEndTime.after(startTime)) {
+        if (joinEndTime != null && joinEndTime.after(startTime)) {
             throw new ValidationException("活动报名截止时间不能在起始时间之后");
         }
         Date now = new Date();
         if (startTime.before(now)) {
             throw new ValidationException("活动起始时间不能在当前时间之前");
         }
-        if (joinEndTime.before(now)) {
+        if (joinEndTime != null && joinEndTime.before(now)){
             throw new ValidationException("活动报名截止时间不能在当前时间之前");
         }
 
