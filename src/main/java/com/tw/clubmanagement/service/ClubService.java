@@ -9,6 +9,7 @@ import com.tw.clubmanagement.entity.UserEntity;
 import com.tw.clubmanagement.enums.ClubType;
 import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
+import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.ClubInformation;
 import com.tw.clubmanagement.model.ClubMember;
 import com.tw.clubmanagement.model.UserInformation;
@@ -38,16 +39,18 @@ public class ClubService {
     private final ApplicationRecordRepository applicationRecordRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ActivityService activityService;
     private final Mapper beanMapper;
 
     @Autowired
     public ClubService(ClubRepository clubRepository, ClubMemberRepository clubMemberRepository,
-                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, UserService userService, Mapper beanMapper) {
+                       ApplicationRecordRepository applicationRecordRepository, UserRepository userRepository, UserService userService, ActivityService activityService, Mapper beanMapper) {
         this.clubRepository = clubRepository;
         this.clubMemberRepository = clubMemberRepository;
         this.applicationRecordRepository = applicationRecordRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.activityService = activityService;
         this.beanMapper = beanMapper;
     }
 
@@ -111,6 +114,8 @@ public class ClubService {
         List<UserInformation> members = userRepository.findAllById(memberIds).stream()
                 .map(UserEntity::toUserInformation).collect(Collectors.toList());
 
+        List<Activity> activities = activityService.getActivitiesByClubId(clubId);
+
         return ClubDetailInfo.builder()
                 .id(clubEntity.getId())
                 .introduction(clubEntity.getIntroduction())
@@ -120,7 +125,7 @@ public class ClubService {
                 .type(clubEntity.getType())
                 .members(members)
                 .createdAt(clubEntity.getCreatedAt())
-                .activities(new ArrayList<>()) // TODO set activities here
+                .activities(activities)
                 .build();
     }
 

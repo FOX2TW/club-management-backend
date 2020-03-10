@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -167,5 +169,12 @@ public class ActivityService {
 
     public List<Integer> getParticipantIds(Integer activityId) {
         return activityParticipantService.getParticipantIds(activityId);
+    }
+
+    public List<Activity> getActivitiesByClubId(Integer clubId) {
+        return activityRepository.findAllByClubId(clubId).stream()
+                .filter(activityEntity -> activityEntity.getEndTime().after(new Date()))
+                .sorted(Comparator.comparing(ActivityEntity::getStartTime))
+                .map(ActivityEntity::toActivity).collect(Collectors.toList());
     }
 }
