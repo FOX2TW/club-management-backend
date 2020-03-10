@@ -7,7 +7,9 @@ import com.tw.clubmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -22,5 +24,10 @@ public class UserService {
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new ResourceNotFoundException("未发现用户信息"));
         return userEntity.toUserInformation();
+    }
+
+    public List<UserInformation> getUserInformations(List<Integer> userIds) {
+        return userRepository.findAllById(userIds).stream()
+                .map(UserEntity::toUserInformation).collect(Collectors.toList());
     }
 }

@@ -4,9 +4,11 @@ import com.tw.clubmanagement.controller.representation.ActivityDetailsGetRespons
 import com.tw.clubmanagement.controller.representation.JoinedActivityGetResponseDTO;
 import com.tw.clubmanagement.controller.representation.VisibleActivityGetResponseDTO;
 import com.tw.clubmanagement.model.Activity;
+import com.tw.clubmanagement.model.UserInformation;
 import com.tw.clubmanagement.service.ActivityParticipantService;
 import com.tw.clubmanagement.service.ActivityService;
 import com.tw.clubmanagement.service.ClubService;
+import com.tw.clubmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +21,17 @@ public class ActivityFacadeService {
     private ActivityService activityService;
     private ActivityParticipantService activityParticipantService;
     private ClubService clubService;
+    private UserService userService;
 
     @Autowired
     public ActivityFacadeService(ActivityService activityService,
                                  ActivityParticipantService activityParticipantService,
-                                 ClubService clubService) {
+                                 ClubService clubService,
+                                 UserService userService) {
         this.activityService = activityService;
         this.activityParticipantService = activityParticipantService;
         this.clubService = clubService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -55,12 +60,14 @@ public class ActivityFacadeService {
     public ActivityDetailsGetResponseDTO getActivityDetailsById(Integer userId, Integer activityId) {
         Activity activity = activityService.getActivityById(activityId);
         List<Integer> participantIds = activityService.getParticipantIds(activityId);
+        List<UserInformation> userInformations = userService.getUserInformations(participantIds);
+
         List<Integer> managedClubIds = activityService.getManagedClubIds(userId);
         List<Integer> joinedActivityIds = activityParticipantService.getJoinedActivityIds(userId);
         List<Integer> clubIds = clubService.getClubIds(userId);
         Map<Integer, String> clubIdNameMap = clubService.getIdNameMap();
 
         return ActivityDetailsGetResponseDTO.from(
-                activity, participantIds, managedClubIds, joinedActivityIds, clubIds, clubIdNameMap);
+                activity, userInformations, managedClubIds, joinedActivityIds, clubIds, clubIdNameMap);
     }
 }

@@ -3,12 +3,14 @@ package com.tw.clubmanagement.controller.representation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
+import com.tw.clubmanagement.model.UserInformation;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -44,7 +46,7 @@ public class ActivityDetailsGetResponseDTO {
     private Integer numberThumbsUp;
 
     @JsonProperty("joinedUser")
-    private List<Integer> joinedUsers;
+    private List<UserInformationGetResponseDTO> joinedUsers;
     @JsonProperty("manager")
     private Boolean manager;
     @JsonProperty("recruiting")
@@ -55,7 +57,7 @@ public class ActivityDetailsGetResponseDTO {
     private Boolean memberVisible;
 
     public static ActivityDetailsGetResponseDTO from(Activity activity,
-                                                     List<Integer> participantIds,
+                                                     List<UserInformation> participantIds,
                                                      List<Integer> managedClubIds,
                                                      List<Integer> joinedActivityIds,
                                                      List<Integer> clubIds,
@@ -74,7 +76,8 @@ public class ActivityDetailsGetResponseDTO {
                 .status(activity.getStatus())
                 .open(activity.getOpen())
                 .numberThumbsUp(activity.getNumberThumbsUp())
-                .joinedUsers(participantIds)
+                .joinedUsers(participantIds.stream()
+                        .map(UserInformationGetResponseDTO::fromUserInformation).collect(Collectors.toList()))
                 .manager(managedClubIds.contains(activity.getClubId()))
                 .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
                 .joined(joinedActivityIds.contains(activity.getId()))
