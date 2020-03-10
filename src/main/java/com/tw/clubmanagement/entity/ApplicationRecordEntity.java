@@ -26,6 +26,7 @@ public class ApplicationRecordEntity extends BaseEntity {
 
     public JoinApplicationDTO toJoinApplicationDTO() {
         return JoinApplicationDTO.builder()
+                .recordId(this.getId())
                 .clubId(clubId)
                 .reason(reason)
                 .applicantId(userId)
