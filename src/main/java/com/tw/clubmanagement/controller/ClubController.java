@@ -77,7 +77,7 @@ public class ClubController {
         clubService.createApplicationRecord(applcationRecordCreateDTO);
     }
 
-    @PutMapping("club/member")
+    @PutMapping("/member")
     @ApiOperation(value = "审批俱乐部成员")
     public void processApplication(@RequestBody @Valid ApplcationProcessDTO processDTO) {
         clubService.processApplication(processDTO);
@@ -98,7 +98,7 @@ public class ClubController {
         clubService.quitClub(clubId, currentUserId);
     }
 
-    @PutMapping("/{clubIb}/process")
+    @PutMapping("/process")
     @AccessPermission(hasRole = "ROLE_ADMIN")
     @ApiOperation(value = "超级管理员处理俱乐部创建")
     public void processClub(@RequestBody @Valid  ClubProcessDTO clubProcessDTO,
