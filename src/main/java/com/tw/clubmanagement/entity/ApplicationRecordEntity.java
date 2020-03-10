@@ -1,6 +1,5 @@
 package com.tw.clubmanagement.entity;
 
-import com.tw.clubmanagement.controller.representation.ApplcationRecordCreateDTO;
 import com.tw.clubmanagement.controller.representation.JoinApplicationDTO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +24,9 @@ public class ApplicationRecordEntity extends BaseEntity {
     private String managerComment;
     private int status;
 
-    public ApplicationRecordEntity(ApplcationRecordCreateDTO recordCreateDTO) {
-        this.setClubId(recordCreateDTO.getClubId());
-        this.setUserId(recordCreateDTO.getUserId());
-        this.setReason(recordCreateDTO.getReason());
-        this.setCellphone(recordCreateDTO.getCellphone());
-        this.setWeChatNo(recordCreateDTO.getWeChatNo());
-    }
-
     public JoinApplicationDTO toJoinApplicationDTO() {
         return JoinApplicationDTO.builder()
+                .recordId(this.getId())
                 .clubId(clubId)
                 .reason(reason)
                 .applicantId(userId)

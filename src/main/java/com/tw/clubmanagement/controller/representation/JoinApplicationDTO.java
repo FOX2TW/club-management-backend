@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 @Builder
 public class JoinApplicationDTO {
+    private Integer  recordId;
     private Integer  clubId;
     private String clubName;
     private String applicantName;
