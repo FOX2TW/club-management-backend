@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,6 +123,11 @@ public class ActivityService {
             throw new ValidationException("已经报名");
         }
 
+        if (activityOptional.get().getNumberLimitation() != 0 &&
+                activityParticipantService.countByActivityId(activityId) >= activityOptional.get().getNumberLimitation()) {
+            throw new ValidationException("活动报名已满");
+        }
+
         ActivityParticipant activityParticipant = ActivityParticipant.builder()
                 .activityId(activityId)
                 .participantId(userId)
@@ -143,10 +146,6 @@ public class ActivityService {
         List<Integer> memberClubIds = clubService.getClubIds(userId);
         if (!memberClubIds.contains(activityOptional.get().getClubId())) {
             throw new ValidationException("非俱乐部会员不能取消报名俱乐部的活动");
-        }
-
-        if (activityParticipantService.countByActivityId(activityId) >= activityOptional.get().getNumberLimitation()) {
-            throw new ValidationException("活动报名已满");
         }
 
         if (!activityParticipantService.findByActivityIdAndParticipantId(activityId, userId).isPresent()) {

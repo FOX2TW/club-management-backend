@@ -122,7 +122,6 @@ public class ClubService {
                 .build();
     }
 
-    @Transactional
     public void createClub(ClubCreateDTO clubCreateDTO, Integer userId) {
         ClubEntity clubEntity = new ClubEntity();
         clubEntity.setAddress(clubCreateDTO.getAddress());
@@ -131,17 +130,7 @@ public class ClubService {
         clubEntity.setIntroduction(clubCreateDTO.getIntroduction());
         clubEntity.setPicture(clubCreateDTO.getPicture());
         clubEntity.setCreatedBy(userId);
-        ClubInformation clubInformation = clubRepository.save(clubEntity).toClubInformation();
-
-        ClubMember clubMember = ClubMember.builder()
-                .clubId(clubInformation.getId())
-                .userId(userId)
-                .isManager(true)
-                .build();
-        ClubMemberEntity clubMemberEntity = ClubMemberEntity.fromClubMember(clubMember);
-        clubMemberEntity.setCreatedBy(userId);
-        clubMemberEntity.setUpdatedBy(userId);
-        clubMemberRepository.save(clubMemberEntity);
+        clubRepository.save(clubEntity).toClubInformation();
     }
 
     public void updateClub(ClubUpdateDTO clubUpdateDTO, Integer userId) {
