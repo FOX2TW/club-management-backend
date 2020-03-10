@@ -62,7 +62,7 @@ public class ReleaseActivityPostRequestDTO {
         if (StringUtils.isEmpty(themePicture)) {
             throw new ValidationException("未指定活动主题图片");
         }
-        if (themePicture.length() > 100) {
+        if (themePicture.length() > 2000) {
             throw new ValidationException("活动主题图片路径过长");
         }
 

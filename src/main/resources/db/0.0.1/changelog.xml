@@ -50,7 +50,7 @@
                 `id` int unsigned not null primary key auto_increment COMMENT '主键',
                 `club_id` int unsigned not null COMMENT '俱乐部ID',
                 `name` varchar(100) not null COMMENT '名称',
-                `theme_picture` varchar(100) not null COMMENT '主题图片，通过文件路径指定',
+                `theme_picture` varchar(2000) not null COMMENT '主题图片，通过文件路径指定',
                 `start_time` timestamp not null COMMENT '活动起始时间',
                 `end_time` timestamp COMMENT '活动结束时间',
                 `join_end_time` timestamp not null COMMENT '报名截止时间',
