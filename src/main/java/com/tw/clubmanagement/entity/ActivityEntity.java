@@ -13,7 +13,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "t_activity")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

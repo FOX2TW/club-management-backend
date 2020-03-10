@@ -170,11 +170,4 @@ public class ActivityService {
     public List<Integer> getParticipantIds(Integer activityId) {
         return activityParticipantService.getParticipantIds(activityId);
     }
-
-    public List<Activity> getActivitiesByClubId(Integer clubId) {
-        return activityRepository.findAllByClubId(clubId).stream()
-                .filter(activityEntity -> activityEntity.getEndTime().after(new Date()))
-                .sorted(Comparator.comparing(ActivityEntity::getStartTime))
-                .map(ActivityEntity::toActivity).collect(Collectors.toList());
-    }
 }
