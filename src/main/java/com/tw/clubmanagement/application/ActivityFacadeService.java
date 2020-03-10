@@ -58,7 +58,9 @@ public class ActivityFacadeService {
         List<Integer> managedClubIds = activityService.getManagedClubIds(userId);
         List<Integer> joinedActivityIds = activityParticipantService.getJoinedActivityIds(userId);
         List<Integer> clubIds = clubService.getClubIds(userId);
+        Map<Integer, String> clubIdNameMap = clubService.getIdNameMap();
 
-        return ActivityDetailsGetResponseDTO.from(activity, participantIds, managedClubIds, joinedActivityIds, clubIds);
+        return ActivityDetailsGetResponseDTO.from(
+                activity, participantIds, managedClubIds, joinedActivityIds, clubIds, clubIdNameMap);
     }
 }

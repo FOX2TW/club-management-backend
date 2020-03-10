@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,17 +17,22 @@ public class ActivityDetailsGetResponseDTO {
     private Integer id;
     @JsonProperty("clubId")
     private Integer clubId;
+    @JsonProperty("clubName")
+    private String clubName;
     @JsonProperty("name")
     private String name;
     @JsonProperty("picture")
     private String themePicture;
-    @JsonProperty("startTime")
+    @JsonProperty("startDate")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
-    @JsonProperty("endTime")
+    @JsonProperty("endDate")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
-    @JsonProperty("joinEndTime")
+    @JsonProperty("endJoinDate")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date joinEndTime;
-    @JsonProperty("numberLimitation")
+    @JsonProperty("limit")
     private Integer numberLimitation;
     @JsonProperty("description")
     private String description;
@@ -51,10 +58,12 @@ public class ActivityDetailsGetResponseDTO {
                                                      List<Integer> participantIds,
                                                      List<Integer> managedClubIds,
                                                      List<Integer> joinedActivityIds,
-                                                     List<Integer> clubIds) {
+                                                     List<Integer> clubIds,
+                                                     Map<Integer, String> clubIdNameMap) {
         return ActivityDetailsGetResponseDTO.builder()
                 .id(activity.getId())
                 .clubId(activity.getClubId())
+                .clubName(clubIdNameMap.get(activity.getClubId()))
                 .name(activity.getName())
                 .themePicture(activity.getThemePicture())
                 .startTime(activity.getStartTime())
