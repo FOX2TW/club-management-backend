@@ -8,6 +8,7 @@ import com.tw.clubmanagement.controller.representation.VisibleActivityGetRespons
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.service.ActivityService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/activity")
+@Slf4j
 public class ActivityController {
     private static final Pattern POSITIVE_PATTERN = Pattern.compile("^[1-9]?[0-9]*$");
 
@@ -33,18 +35,24 @@ public class ActivityController {
     @PostMapping
     public Integer releaseActivity(@RequestHeader("currentUserId") Integer currentUserId,
                                    @RequestBody ReleaseActivityPostRequestDTO releaseActivityPostRequestDTO) {
+        log.info("Current user id: " + currentUserId);
+        log.info("request: " + releaseActivityPostRequestDTO);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
         releaseActivityPostRequestDTO.check();
 
         Activity activity = releaseActivityPostRequestDTO.toActivity();
-        return activityService.releaseActivity(currentUserId, activity);
+        Integer activityId = activityService.releaseActivity(currentUserId, activity);
+        log.info("Released activity: " + activityId);
+        return activityId;
     }
 
     @DeleteMapping("/{activityId}")
     public void deleteActivityById(@RequestHeader("currentUserId") Integer currentUserId,
                                    @PathVariable String activityId) {
+        log.info("Current user id: " + currentUserId);
+        log.info("Activity id: " + activityId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
@@ -58,26 +66,34 @@ public class ActivityController {
     @GetMapping("/list/joined")
     public List<JoinedActivityGetResponseDTO> getJoinedActivities(
             @RequestHeader("currentUserId") Integer currentUserId) {
+        log.info("Current user id: " + currentUserId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
 
-        return activityFacadeService.getJoinedActivities(currentUserId);
+        List<JoinedActivityGetResponseDTO> joinedActivities = activityFacadeService.getJoinedActivities(currentUserId);
+        log.info("Joined activities: " + joinedActivities);
+        return joinedActivities;
     }
 
     @GetMapping("/list/visible")
     public List<VisibleActivityGetResponseDTO> getVisibleActivities(
             @RequestHeader("currentUserId") Integer currentUserId) {
+        log.info("Current user id: " + currentUserId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
 
-        return activityFacadeService.getVisibleActivities(currentUserId);
+        List<VisibleActivityGetResponseDTO> visibleActivities = activityFacadeService.getVisibleActivities(currentUserId);
+        log.info("Visible activities: " + visibleActivities);
+        return visibleActivities;
     }
 
     @GetMapping("/{activityId}")
     public ActivityDetailsGetResponseDTO getActivityDetailsById(@RequestHeader("currentUserId") Integer currentUserId,
                                                                 @PathVariable String activityId) {
+        log.info("Current user id: " + currentUserId);
+        log.info("Activity id: " + activityId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
@@ -85,12 +101,17 @@ public class ActivityController {
             throw new ValidationException("活动ID必须是一个正整数");
         }
 
-        return activityFacadeService.getActivityDetailsById(currentUserId, Integer.valueOf(activityId));
+        ActivityDetailsGetResponseDTO activityDetails =
+                activityFacadeService.getActivityDetailsById(currentUserId, Integer.valueOf(activityId));
+
+        log.info("Activity details: " + activityDetails);
+        return activityDetails;
     }
 
     @GetMapping("/club/{clubId}")
     public List<VisibleActivityGetResponseDTO> getVisibleActivitiesByClubId(
             @RequestHeader("currentUserId") Integer currentUserId, @PathVariable String clubId) {
+        log.info("Current user id: " + currentUserId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
@@ -98,13 +119,18 @@ public class ActivityController {
             throw new ValidationException("俱乐部ID必须是一个正整数");
         }
 
-        return activityFacadeService.getVisibleActivities(currentUserId).stream()
+        List<VisibleActivityGetResponseDTO> visibleActivityByClub = activityFacadeService.getVisibleActivities(currentUserId).stream()
                 .filter(visibleActivity -> visibleActivity.getClubId().equals((Integer.valueOf(clubId))))
                 .collect(Collectors.toList());
+
+        log.info("Visible activity: " + visibleActivityByClub);
+        return visibleActivityByClub;
     }
 
     @PutMapping("/{activityId}/join")
     public void joinActivity(@RequestHeader("currentUserId") Integer currentUserId, @PathVariable String activityId) {
+        log.info("Current user id: " + currentUserId);
+        log.info("Activity id: " + activityId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
@@ -117,6 +143,8 @@ public class ActivityController {
 
     @PutMapping("/{activityId}/cancelJoining")
     public void cancelJoiningActivity(@RequestHeader("currentUserId") Integer currentUserId, @PathVariable String activityId) {
+        log.info("Current user id: " + currentUserId);
+        log.info("Activity id: " + activityId);
         if (currentUserId == null) {
             throw new ValidationException("未指定当前用户ID");
         }
