@@ -10,8 +10,8 @@ import com.tw.clubmanagement.model.*;
 import com.tw.clubmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,6 +122,7 @@ public class ClubService {
                 .build();
     }
 
+    @Transactional
     public void createClub(ClubCreateDTO clubCreateDTO, Integer userId) {
         ClubEntity clubEntity = new ClubEntity();
         clubEntity.setAddress(clubCreateDTO.getAddress());
@@ -130,7 +131,17 @@ public class ClubService {
         clubEntity.setIntroduction(clubCreateDTO.getIntroduction());
         clubEntity.setPicture(clubCreateDTO.getPicture());
         clubEntity.setCreatedBy(userId);
-        clubRepository.save(clubEntity).toClubInformation();
+        ClubInformation clubInformation = clubRepository.save(clubEntity).toClubInformation();
+
+        ClubMember clubMember = ClubMember.builder()
+                .clubId(clubInformation.getId())
+                .userId(userId)
+                .isManager(true)
+                .build();
+        ClubMemberEntity clubMemberEntity = ClubMemberEntity.fromClubMember(clubMember);
+        clubMemberEntity.setCreatedBy(userId);
+        clubMemberEntity.setUpdatedBy(userId);
+        clubMemberRepository.save(clubMemberEntity);
     }
 
     public void updateClub(ClubUpdateDTO clubUpdateDTO, Integer userId) {
@@ -294,8 +305,8 @@ public class ClubService {
         List<JoinApplicationDTO> applicationDTOS = recordEntities.stream()
                 .map(ApplicationRecordEntity::toJoinApplicationDTO).collect(Collectors.toList());
         applicationDTOS.forEach(joinApplicationDTO -> {
-                joinApplicationDTO.setApplicantName(userEntityMap.get(joinApplicationDTO.getApplicantId()).getUsername());
-                joinApplicationDTO.setClubName(clubEntityMap.get(joinApplicationDTO.getClubId()).getName());
+            joinApplicationDTO.setApplicantName(userEntityMap.get(joinApplicationDTO.getApplicantId()).getUsername());
+            joinApplicationDTO.setClubName(clubEntityMap.get(joinApplicationDTO.getClubId()).getName());
         });
 
         return applicationDTOS;
