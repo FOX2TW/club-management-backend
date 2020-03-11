@@ -24,6 +24,7 @@ public class ActivityEntity extends BaseEntity {
     private Date startTime;
     private Date endTime;
     private Date joinEndTime;
+    private Integer numberJoined;
     private Integer numberLimitation;
     private String description;
     private Integer status;
@@ -39,6 +40,7 @@ public class ActivityEntity extends BaseEntity {
                 .startTime(startTime)
                 .endTime(endTime)
                 .joinEndTime(joinEndTime)
+                .numberJoined(numberJoined)
                 .numberLimitation(numberLimitation)
                 .description(description)
                 .status(status)

@@ -17,6 +17,7 @@ public class Activity {
     private Date startTime;
     private Date endTime;
     private Date joinEndTime;
+    private Integer numberJoined;
     private Integer numberLimitation;
     private String description;
     private Integer status;

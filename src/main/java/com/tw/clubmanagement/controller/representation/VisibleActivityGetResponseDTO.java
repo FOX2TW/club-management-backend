@@ -3,6 +3,7 @@ package com.tw.clubmanagement.controller.representation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
+import com.tw.clubmanagement.util.ActivityStatusUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -44,21 +45,6 @@ public class VisibleActivityGetResponseDTO {
     @JsonProperty("open")
     private Boolean open;
 
-    private static Integer status(Date joinEndTime, Date start, Date end) {
-        Date now = new Date();
-        if (joinEndTime != null && now.before(joinEndTime)) {
-            return 0;
-        }
-        if (start != null && now.before(start)) {
-            return 1;
-        }
-        if (end != null && now.before(end)) {
-            return 2;
-        }
-
-        return 3;
-    }
-
     public static List<VisibleActivityGetResponseDTO> fromActivitiesWithRole(List<Activity> joinedActivities,
                                                                              List<Activity> memberVisibleActivities,
                                                                              List<Activity> openActivities,
@@ -76,7 +62,8 @@ public class VisibleActivityGetResponseDTO {
                                 .name(activity.getName())
                                 .themePicture(activity.getThemePicture())
                                 .description(activity.getDescription())
-                                .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
+                                .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(),
+                                        activity.getEndTime(), activity.getNumberLimitation(), activity.getNumberJoined()))
                                 .manager(clubIdSet.contains(activity.getClubId()))
                                 .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
                                 .joinEndTime(activity.getJoinEndTime())
@@ -96,7 +83,8 @@ public class VisibleActivityGetResponseDTO {
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
-                        .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
+                        .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
+                                activity.getNumberLimitation(), activity.getNumberJoined()))
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
                         .joinEndTime(activity.getJoinEndTime())
@@ -114,7 +102,8 @@ public class VisibleActivityGetResponseDTO {
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
-                        .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
+                        .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
+                                activity.getNumberLimitation(), activity.getNumberJoined()))
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
                         .joinEndTime(activity.getJoinEndTime())

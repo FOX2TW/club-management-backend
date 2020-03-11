@@ -2,6 +2,7 @@ package com.tw.clubmanagement.service;
 
 import com.tw.clubmanagement.entity.ActivityEntity;
 import com.tw.clubmanagement.exception.InternalServerErrorException;
+import com.tw.clubmanagement.exception.ResourceNotFoundException;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.ActivityParticipant;
@@ -138,6 +139,9 @@ public class ActivityService {
                 .participantId(userId)
                 .role(0)
                 .build();
+
+        updateNumberJoined(activityId, 1);
+
         activityParticipantService.join(activityParticipant);
     }
 
@@ -159,6 +163,14 @@ public class ActivityService {
 
         activityParticipantService.deleteActivityParticipant(activityId, userId);
 
+        updateNumberJoined(activityId, -1);
+
+    }
+
+    private void updateNumberJoined(Integer activityId, int updateNumber) {
+        ActivityEntity activityEntity = activityRepository.findById(activityId).orElseThrow(() -> new ResourceNotFoundException("活动不存在"));
+        activityEntity.setNumberJoined(activityEntity.getNumberJoined()+updateNumber);
+        activityRepository.save(activityEntity);
     }
 
     @Transactional

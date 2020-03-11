@@ -172,5 +172,12 @@
             (1, 1);
         </sql>
     </changeSet>
+    <changeSet id="0.0.1-add-field-number_joined" author="jun.li">
+        <addColumn tableName="t_activity">
+            <column name="number_joined" type="INT" afterColumn="number_limitation" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

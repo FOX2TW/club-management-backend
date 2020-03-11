@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.UserInformation;
+import com.tw.clubmanagement.util.ActivityStatusUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -56,21 +57,6 @@ public class ActivityDetailsGetResponseDTO {
     @JsonProperty("memberVisible")
     private Boolean memberVisible;
 
-    private static Integer status(Date joinEndTime, Date start, Date end) {
-        Date now = new Date();
-        if (joinEndTime != null && now.before(joinEndTime)) {
-            return 0;
-        }
-        if (start != null && now.before(start)) {
-            return 1;
-        }
-        if (end != null && now.before(end)) {
-            return 2;
-        }
-
-        return 3;
-    }
-
     public static ActivityDetailsGetResponseDTO from(Activity activity,
                                                      List<UserInformation> participantIds,
                                                      List<Integer> managedClubIds,
@@ -88,7 +74,7 @@ public class ActivityDetailsGetResponseDTO {
                 .joinEndTime(activity.getJoinEndTime())
                 .numberLimitation(activity.getNumberLimitation())
                 .description(activity.getDescription())
-                .status(status(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime()))
+                .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(), activity.getNumberLimitation(), activity.getNumberJoined()))
                 .open(activity.getOpen())
                 .numberThumbsUp(activity.getNumberThumbsUp())
                 .joinedUsers(participantIds.stream()
