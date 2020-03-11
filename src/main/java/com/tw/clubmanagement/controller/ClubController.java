@@ -57,8 +57,9 @@ public class ClubController {
 
     @GetMapping("{clubId}")
     @ApiOperation(value = "查询俱乐部详情")
-    public ClubDetailInfo getClubDetailInfo(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE) Integer clubId) {
-        return clubService.getClubDetailInfo(clubId);
+    public ClubDetailInfo getClubDetailInfo(@PathVariable @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE) Integer clubId,
+                                            @RequestHeader @Min(value = 1, message = USERID_INVALID_MESSAGE)Integer currentUserId) {
+        return clubService.getClubDetailInfo(clubId, currentUserId);
     }
 
     @GetMapping("type")

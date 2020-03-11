@@ -99,13 +99,17 @@ public class ClubService {
         return InvolvedClubGetResponseDTO.fromClubInformationAndClubMember(clubInformations, clubMembers);
     }
 
-    public ClubDetailInfo getClubDetailInfo(Integer clubId) {
+    public ClubDetailInfo getClubDetailInfo(Integer clubId, Integer currentUserId) {
         ClubEntity clubEntity = clubRepository.findById(clubId).orElseThrow(() -> new ResourceNotFoundException("找不到指定俱乐部"));
-        List<Integer> memberIds = clubMemberRepository.findByClubId(clubId).stream()
+        List<ClubMemberEntity> clubMembers= clubMemberRepository.findByClubId(clubId);
+        List<Integer> memberIds = clubMembers.stream()
+                .map(ClubMemberEntity::getUserId).collect(Collectors.toList());
+        List<Integer> managerIds = clubMembers.stream().filter(clubMemberEntity -> clubMemberEntity.isManagerFlag())
                 .map(ClubMemberEntity::getUserId).collect(Collectors.toList());
 
         List<UserInformation> members = userRepository.findAllById(memberIds).stream()
                 .map(UserEntity::toUserInformation).collect(Collectors.toList());
+
 
         List<Activity> activities = getActivitiesByClubId(clubId);
 
@@ -119,6 +123,8 @@ public class ClubService {
                 .members(members)
                 .createdAt(clubEntity.getCreatedAt())
                 .activities(activities)
+                .isJoin(memberIds.contains(currentUserId))
+                .isManager(managerIds.contains(currentUserId))
                 .build();
     }
 

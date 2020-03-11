@@ -1,5 +1,6 @@
 package com.tw.clubmanagement.controller.representation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.UserInformation;
 import lombok.Builder;
@@ -19,6 +20,10 @@ public class ClubDetailInfo {
     private String address;
     private List<UserInformation> members;
     private List<Activity> activities;
+    @JsonProperty("isManager")
+    private boolean isManager;
+    @JsonProperty("isJoin")
+    private boolean isJoin;
     private Date createdAt;
 
 }

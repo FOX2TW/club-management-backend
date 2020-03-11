@@ -11,7 +11,7 @@ public class ActivityStatusUtil {
         boolean isMatchedNumberLimitation = numberJoined.intValue() == numberLimitation.intValue();
 
         Date now = new Date();
-        log.info("now: {}, join_end: {}, start: {}, end: {}, numberLimitation: {}, numberJoined: {}", now, joinEndTime, start, end, numberLimitation, numberLimitation);
+//        log.info("now: {}, join_end: {}, start: {}, end: {}, numberLimitation: {}, numberJoined: {}", now, joinEndTime, start, end, numberLimitation, numberLimitation);
         if (joinEndTime != null && now.before(joinEndTime) && !isMatchedNumberLimitation) {
             return 0;
         }
