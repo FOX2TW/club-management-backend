@@ -1,10 +1,7 @@
 package com.tw.clubmanagement.controller;
 
 import com.tw.clubmanagement.application.ActivityFacadeService;
-import com.tw.clubmanagement.controller.representation.ActivityDetailsGetResponseDTO;
-import com.tw.clubmanagement.controller.representation.JoinedActivityGetResponseDTO;
-import com.tw.clubmanagement.controller.representation.ReleaseActivityPostRequestDTO;
-import com.tw.clubmanagement.controller.representation.VisibleActivityGetResponseDTO;
+import com.tw.clubmanagement.controller.representation.*;
 import com.tw.clubmanagement.exception.ValidationException;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.service.ActivityService;
@@ -46,6 +43,20 @@ public class ActivityController {
         Integer activityId = activityService.releaseActivity(currentUserId, activity);
         log.info("Released activity: " + activityId);
         return activityId;
+    }
+
+    @PutMapping
+    public void editActivity(@RequestHeader("currentUserId") Integer currentUserId,
+                                   @RequestBody ActivityUpdateRequestDTO activityUpdateRequestDTO) {
+        log.info("Current user id: " + currentUserId);
+        log.info("request: " + activityUpdateRequestDTO);
+        if (currentUserId == null) {
+            throw new ValidationException("未指定当前用户ID");
+        }
+        activityUpdateRequestDTO.check();
+
+        Activity activity = activityUpdateRequestDTO.toActivity();
+        activityService.updateActivity(currentUserId, activity);
     }
 
     @DeleteMapping("/{activityId}")

@@ -186,4 +186,21 @@ public class ActivityService {
     public List<Integer> getParticipantIds(Integer activityId) {
         return activityParticipantService.getParticipantIds(activityId);
     }
+
+    public void updateActivity(Integer currentUserId, Activity activity) {
+        ActivityEntity activityEntity = activityRepository.findById(activity.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("未找到对应活动"));
+
+        activity.setClubId(activity.getId());
+        activityEntity.setDescription(activity.getDescription());
+        activityEntity.setName(activity.getName());
+        activityEntity.setEndTime(activity.getEndTime());
+        activityEntity.setJoinEndTime(activity.getJoinEndTime());
+        activityEntity.setStartTime(activity.getStartTime());
+        activityEntity.setOpen(activity.getOpen());
+        activityEntity.setNumberLimitation(activity.getNumberLimitation());
+        activityEntity.setThemePicture(activity.getThemePicture());
+        activityEntity.setUpdatedBy(currentUserId);
+        activityRepository.save(activityEntity);
+    }
 }
