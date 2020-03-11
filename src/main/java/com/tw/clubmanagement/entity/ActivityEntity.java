@@ -57,6 +57,7 @@ public class ActivityEntity extends BaseEntity {
                 .startTime(activity.getStartTime())
                 .endTime(activity.getEndTime())
                 .joinEndTime(activity.getJoinEndTime())
+                .numberJoined(0)
                 .numberLimitation(activity.getNumberLimitation())
                 .description(activity.getDescription())
                 .status(activity.getStatus())
