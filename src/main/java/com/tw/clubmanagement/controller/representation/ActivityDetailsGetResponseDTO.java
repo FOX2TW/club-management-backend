@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
 import com.tw.clubmanagement.model.UserInformation;
-import com.tw.clubmanagement.util.ActivityStatusUtil;
+import com.tw.clubmanagement.util.ActivityUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -74,7 +74,7 @@ public class ActivityDetailsGetResponseDTO {
                 .joinEndTime(activity.getJoinEndTime())
                 .numberLimitation(activity.getNumberLimitation())
                 .description(activity.getDescription())
-                .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(), activity.getNumberLimitation(), activity.getNumberJoined()))
+                .status(ActivityUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(), activity.getNumberLimitation(), activity.getNumberJoined()))
                 .open(activity.getOpen())
                 .numberThumbsUp(activity.getNumberThumbsUp())
                 .joinedUsers(participantIds.stream()

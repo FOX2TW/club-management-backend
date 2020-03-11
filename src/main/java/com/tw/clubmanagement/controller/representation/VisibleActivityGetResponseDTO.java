@@ -3,7 +3,7 @@ package com.tw.clubmanagement.controller.representation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tw.clubmanagement.model.Activity;
-import com.tw.clubmanagement.util.ActivityStatusUtil;
+import com.tw.clubmanagement.util.ActivityUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -62,7 +62,7 @@ public class VisibleActivityGetResponseDTO {
                                 .name(activity.getName())
                                 .themePicture(activity.getThemePicture())
                                 .description(activity.getDescription())
-                                .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(),
+                                .status(ActivityUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(),
                                         activity.getEndTime(), activity.getNumberLimitation(), activity.getNumberJoined()))
                                 .manager(clubIdSet.contains(activity.getClubId()))
                                 .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
@@ -83,7 +83,7 @@ public class VisibleActivityGetResponseDTO {
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
-                        .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
+                        .status(ActivityUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
                                 activity.getNumberLimitation(), activity.getNumberJoined()))
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
@@ -102,7 +102,7 @@ public class VisibleActivityGetResponseDTO {
                         .name(activity.getName())
                         .themePicture(activity.getThemePicture())
                         .description(activity.getDescription())
-                        .status(ActivityStatusUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
+                        .status(ActivityUtil.calculateStatus(activity.getJoinEndTime(), activity.getStartTime(), activity.getEndTime(),
                                 activity.getNumberLimitation(), activity.getNumberJoined()))
                         .manager(clubIdSet.contains(activity.getClubId()))
                         .recruiting(activity.getStatus() == 0 && new Date().before(activity.getJoinEndTime()))
