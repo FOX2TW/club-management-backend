@@ -90,7 +90,7 @@ public class ActivityService {
     public List<Activity> getMemberVisibleActivities(Integer userId) {
         List<Integer> clubIds = clubService.getClubIds(userId);
 
-        return activityRepository.findAllByClubId(clubIds).stream()
+        return activityRepository.findAllByClubIdIn(clubIds).stream()
                 .map(ActivityEntity::toActivity).collect(Collectors.toList());
     }
 

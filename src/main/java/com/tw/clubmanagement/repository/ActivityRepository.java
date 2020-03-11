@@ -10,7 +10,7 @@ import java.util.List;
 public interface ActivityRepository extends JpaRepository<ActivityEntity, Integer> {
     List<ActivityEntity> findAllByClubId(Integer clubId);
 
-    List<ActivityEntity> findAllByClubId(Iterable<Integer> clubIds);
+    List<ActivityEntity> findAllByClubIdIn(Iterable<Integer> clubIds);
 
     List<ActivityEntity> findAllByOpen(Integer open);
 }
