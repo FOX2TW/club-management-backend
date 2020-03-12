@@ -24,6 +24,8 @@ public class ClubDetailInfo {
     private boolean isManager;
     @JsonProperty("isJoin")
     private boolean isJoin;
+    @JsonProperty("isApproved")
+    private boolean isApproved;
     private Date createdAt;
 
 }

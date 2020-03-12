@@ -125,6 +125,7 @@ public class ClubService {
                 .activities(activities)
                 .isJoin(memberIds.contains(currentUserId))
                 .isManager(managerIds.contains(currentUserId))
+                .isApproved(clubEntity.isApproveStatus())
                 .build();
     }
 
