@@ -268,6 +268,9 @@ public class ClubService {
     public void cancelJoinApplication(Integer clubIb, Integer currentUserId) {
         ApplicationRecordEntity recordEntity = applicationRecordRepository.findByUserIdAndClubId(currentUserId, clubIb)
                 .orElseThrow(() -> new ResourceNotFoundException("无此申请记录"));
+        if (recordEntity.getStatus() != ApplicationRecordEntity.UNPROCESSED) {
+            throw new ValidationException("申请已处理，无法取消");
+        }
         applicationRecordRepository.deleteById(recordEntity.getId());
 
     }
