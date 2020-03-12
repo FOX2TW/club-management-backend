@@ -18,6 +18,7 @@ public class ClubRepresentation {
     @JsonProperty("isJoin")
     private boolean isJoin;
     private String introduction;
+    private String picture;
     @JsonIgnore
     private int createdBy;
 
