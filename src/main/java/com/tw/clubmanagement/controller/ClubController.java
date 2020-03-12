@@ -96,7 +96,7 @@ public class ClubController {
         clubService.deleteClubMember(clubId, userId, currentUserId);
     }
 
-    @DeleteMapping("/{clubIb}/member")
+    @DeleteMapping("/{clubId}/member")
     @ApiOperation(value = "退出俱乐部")
     public void deleteClubMember(@PathVariable(value = "clubId") @Min(value = 1, message = CLUB_ID_INVALID_MESSAGE)Integer clubId,
                                  @RequestHeader Integer currentUserId) {
